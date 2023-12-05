@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 # Sets project name
-project(projects_realtime LANGUAGES CXX C)
+project(CSCI1230Final LANGUAGES CXX C)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -28,28 +28,19 @@ add_executable(${PROJECT_NAME}
     src/main.cpp
 
     src/realtime.cpp
+    src/camera.cpp
     src/mainwindow.cpp
     src/settings.cpp
-    src/utils/scenefilereader.cpp
-    src/utils/sceneparser.cpp
+
+
+
 
     src/mainwindow.h
+    src/camera.h
     src/realtime.h
     src/settings.h
-    src/utils/scenedata.h
-    src/utils/scenefilereader.h
-    src/utils/sceneparser.h
     src/utils/shaderloader.h
     src/utils/aspectratiowidget/aspectratiowidget.hpp
-    src/camera.h src/camera.cpp
-
-    src/sphere.h src/sphere.cpp
-    src/cylinder.h src/cylinder.cpp
-    src/cube.h src/cube.cpp
-    src/cone.h src/cone.cpp
-    src/tiny_obj_loader.h
-
-
 )
 
 # GLM: this creates its library and allows you to `#include "glm/..."`
@@ -74,23 +65,6 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
     PREFIX
         "/"
     FILES
-        resources/shaders/default.frag
-        resources/shaders/default.vert
-        resources/shaders/texture.frag
-        resources/shaders/texture.vert
-        resources/shaders/fxaa.frag
-        resources/shaders/fxaa.vert
-)
-
-target_sources(projects_realtime_other_files
-  PRIVATE
-  resources/shaders/texture.frag
-  resources/shaders/texture.vert
-  resources/shaders/fxaa.frag
-  resources/shaders/fxaa.vert
-
-
-
 
 )
 

@@ -9,13 +9,7 @@
 
 // Implementing for initial render
 #include "utils/shaderloader.h"
-#include "utils/sceneparser.h"
 
-//Including for shape rendering
-#include "sphere.h"
-#include "cube.h"
-#include "cone.h"
-#include "cylinder.h"
 
 
 // ================== Project 5: Lights, Camera
@@ -46,28 +40,7 @@ void Realtime::finish() {
     // Students: anything requiring OpenGL calls when the program exits should be done here
 
     // Delete buffers and vertex arrays
-    glDeleteBuffers(1, &sphere_vbo);
-    glDeleteVertexArrays(1, &sphere_vao);
 
-    glDeleteBuffers(1, &cube_vbo);
-    glDeleteVertexArrays(1, &cube_vao);
-
-    glDeleteBuffers(1, &cone_vbo);
-    glDeleteVertexArrays(1, &cone_vao);
-
-    glDeleteBuffers(1, &cylinder_vbo);
-    glDeleteVertexArrays(1, &cylinder_vao);
-
-    // Implementing for FBO cleanup
-    glDeleteTextures(1, &m_fbo_texture);
-    glDeleteRenderbuffers(1, &m_fbo_renderbuffer);
-    glDeleteFramebuffers(1, &m_fbo);
-
-
-    glDeleteProgram(m_texture_shader);
-    glDeleteProgram(m_shader);
-    glDeleteVertexArrays(1, &m_fullscreen_vao);
-    glDeleteBuffers(1, &m_fullscreen_vbo);
 
 
     // NEED TO CLEAN OUT FBO HERE
@@ -75,145 +48,6 @@ void Realtime::finish() {
     this->doneCurrent();
 }
 
-
-void Realtime::generateShapes() {
-
-    // Implementing Extra Credit 1
-
-    int shapeParameter1 = settings.shapeParameter1;
-    int shapeParameter2 = settings.shapeParameter2;
-
-    // Adaptive LOD implementation
-    // Commenting out to open up the extra credit slots
-
-//    if (settings.extraCredit1) {
-//        int shapeCount = metaData.shapes.size(); // Assuming metaData.shapes holds all your shapes
-
-//        // Example LOD factor calculation based on shape count
-//        float lodFactor = std::max(0.2f, 1.0f - 0.1f * (shapeCount - 1));
-
-//        // Update each shape's parameters with LOD factor
-
-//        shapeParameter1 = int(float(settings.shapeParameter1) * lodFactor);
-
-//        shapeParameter2 = int(float(settings.shapeParameter1) * lodFactor);
-//    }
-
-//    if (settings.extraCredit2) {
-
-//        shapeParameter1 = EC2GlobalParam1;
-//        shapeParameter2 = EC2GlobalParam2;
-//    }
-
-    // Implementing sphere first
-    Sphere sphere;
-    sphere.updateParams(std::max(shapeParameter1, 2), std::max(shapeParameter2, 3));
-
-    // VBO First
-    glGenBuffers(1, &sphere_vbo);
-    glBindBuffer (GL_ARRAY_BUFFER, sphere_vbo);
-    glBufferData(GL_ARRAY_BUFFER,
-                 sphere.generateShape().size() * sizeof(GLfloat),
-                 sphere.generateShape().data(),
-                 GL_STATIC_DRAW);
-    // Noe implementing VAOs
-
-    glGenVertexArrays(1, &sphere_vao);
-    glBindVertexArray(sphere_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, sphere_vao);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), nullptr);
-
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), reinterpret_cast<void*>(3*sizeof(GLfloat)));
-
-    // Cleaning up after the fact
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    // Implementing cube next
-    Cube cube;
-    cube.updateParams(std::max(shapeParameter1, 1));
-
-    // VBO First
-    glGenBuffers(1, &cube_vbo);
-    glBindBuffer (GL_ARRAY_BUFFER, cube_vbo);
-    glBufferData(GL_ARRAY_BUFFER,
-                 cube.generateShape().size() * sizeof(GLfloat),
-                 cube.generateShape().data(),
-                 GL_STATIC_DRAW);
-    // Noe implementing VAOs
-
-    glGenVertexArrays(1, &cube_vao);
-    glBindVertexArray(cube_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, cube_vao);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), nullptr);
-
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), reinterpret_cast<void*>(3*sizeof(GLfloat)));
-
-    // Cleaning up after the fact
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    // Implementing cone next
-    Cone cone;
-    cone.updateParams(std::max(shapeParameter1, 1), std::max(shapeParameter2, 3));
-
-    // VBO First
-    glGenBuffers(1, &cone_vbo);
-    glBindBuffer (GL_ARRAY_BUFFER, cone_vbo);
-    glBufferData(GL_ARRAY_BUFFER,
-                 cone.generateShape().size() * sizeof(GLfloat),
-                 cone.generateShape().data(),
-                 GL_STATIC_DRAW);
-    // Noe implementing VAOs
-
-    glGenVertexArrays(1, &cone_vao);
-    glBindVertexArray(cone_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, cone_vao);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), nullptr);
-
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), reinterpret_cast<void*>(3*sizeof(GLfloat)));
-
-    // Cleaning up after the fact
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    // Implementing cone next
-    Cylinder cylinder;
-    cylinder.updateParams(std::max(shapeParameter1, 1), std::max(shapeParameter2, 3));
-
-    // VBO First
-    glGenBuffers(1, &cylinder_vbo);
-    glBindBuffer (GL_ARRAY_BUFFER, cylinder_vbo);
-    glBufferData(GL_ARRAY_BUFFER,
-                 cylinder.generateShape().size() * sizeof(GLfloat),
-                 cylinder.generateShape().data(),
-                 GL_STATIC_DRAW);
-    // Noe implementing VAOs
-
-    glGenVertexArrays(1, &cylinder_vao);
-    glBindVertexArray(cylinder_vao);
-    glBindBuffer(GL_ARRAY_BUFFER, cylinder_vao);
-
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), nullptr);
-
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), reinterpret_cast<void*>(3*sizeof(GLfloat)));
-
-    // Cleaning up after the fact
-    glBindVertexArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-}
 
 
 
@@ -252,11 +86,6 @@ void Realtime::initializeGL() {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f); // Set the background color to light blue
 
     // Shader setup
-    m_texture_shader = ShaderLoader::createShaderProgram(":/resources/shaders/texture.vert", ":/resources/shaders/texture.frag");
-    m_shader = ShaderLoader::createShaderProgram(":/resources/shaders/default.vert", ":/resources/shaders/default.frag");
-    m_fxaa_shader = ShaderLoader::createShaderProgram(":/resources/shaders/fxaa.vert", ":/resources/shaders/fxaa.frag");
-
-    generateShapes();
 
     // Adding this here from the lab
 
@@ -400,286 +229,12 @@ void Realtime::paintGL() {
         needUpdate = true;
     }
 
-    // Adaptive LOD implementation
-    //Commenting out to free up Extra credit slots
-//    if (settings.extraCredit1) {
-//        int shapeCount = metaData.shapes.size(); // Assuming metaData.shapes holds all your shapes
 
-//        // Example LOD factor calculation based on shape count
-//        float lodFactor = std::max(0.2f, 1.0f - 0.1f * (shapeCount - 1));
 
-//        // Update each shape's parameters with LOD factor
 
-//        shapeParameter1 = int(float(settings.shapeParameter1) * lodFactor);
-
-//        shapeParameter2 = int(float(settings.shapeParameter1) * lodFactor);
-//    }
-
-
-
-    // Task 17: Draw your VAO here
-    Sphere sphere;
-    sphere.updateParams(std::max(shapeParameter1, 2), std::max(shapeParameter2, 3));
-    Cube cube;
-    cube.updateParams(std::max(shapeParameter1, 1));
-    Cone cone;
-    cone.updateParams(std::max(shapeParameter1, 1), std::max(shapeParameter2, 3));
-    Cylinder cylinder;
-    cylinder.updateParams(std::max(shapeParameter1, 1), std::max(shapeParameter2, 3));
-
-    //generateShapes();
-
-    // passing k_a (scene ambient) into the fragment shader as a uniform
-    GLint kaLocation = glGetUniformLocation(m_shader, "k_a");
-    glUniform1f(kaLocation, metaData.globalData.ka);
-
-    GLint oaLocation = glGetUniformLocation(m_shader, "o_a");
-
-
-
-    // Task 13: pass light position and m_kd into the fragment shader as a uniform
-    GLint kdLocation = glGetUniformLocation(m_shader, "k_d");
-    glUniform1f(kdLocation, metaData.globalData.kd);
-
-    GLint odLocation = glGetUniformLocation(m_shader, "o_d");
-
-    GLint lightDirection = glGetUniformLocation(m_shader, "lightDirection");
-
-    glm::vec4 tempLight = glm::vec4(10.0f, 0.0f, 0.0f, 1.0f);
-    if (!metaData.lights.empty()) {
-        glUniform4fv(lightDirection, 1, glm::value_ptr(metaData.lights[0].dir));
-    }
-
-        //glm::value_ptr(metaData.lights[0].pos)
-
-    // Task 6: pass in m_model as a uniform into the shader program
-    GLint modelMatrixLocation = glGetUniformLocation(m_shader, "modelMatrix");
-
-
-    // Task 7: pass in m_view and m_proj
-    GLint viewMatrixLocation = glGetUniformLocation(m_shader, "viewMatrix");
-    glUniformMatrix4fv(viewMatrixLocation, 1, GL_FALSE, glm::value_ptr(View));
-
-    GLint projectionMatrixLocation = glGetUniformLocation(m_shader, "projectionMatrix");
-    glUniformMatrix4fv(projectionMatrixLocation, 1, GL_FALSE, glm::value_ptr(Projection));
-
-
-    // Task 14: pass shininess, m_ks, and world-space camera position
-    GLint ksLocation = glGetUniformLocation(m_shader, "k_s");
-    glUniform1f(ksLocation, metaData.globalData.ks);
-
-    GLint osLocation = glGetUniformLocation(m_shader, "o_s");
-
-    GLint shininessLocation = glGetUniformLocation(m_shader, "shininess");
-
-
-    // Compute the world-space position of the camera from the view matrix
-    glm::mat4 inverseView = glm::inverse(View);
-    glm::vec3 cameraPosition_worldspace = glm::vec3(inverseView[3]);
-
-    GLint cameraPosLocation = glGetUniformLocation(m_shader, "cameraPosition_worldspace");
-    glUniform3fv(cameraPosLocation, 1, glm::value_ptr(cameraPosition_worldspace));
-
-
-    // Set lighting uniforms
-    GLint lightCountLocation = glGetUniformLocation(m_shader, "lightCount");
-    glUniform1i(lightCountLocation, metaData.lights.size()); // Assuming metaData.lights holds your light data
-
-    for (int i = 0; i < metaData.lights.size(); i++) {
-        std::string uniformName = "sceneLights[" + std::to_string(i) + "]";
-        // Set lightType
-
-        // Will need to integrate when light types matter
-        GLint lightTypeLocation = glGetUniformLocation(m_shader, (uniformName + ".lightType").c_str());
-
-        if (metaData.lights[i].type == LightType::LIGHT_DIRECTIONAL) {
-            glUniform1i(lightTypeLocation, 1);
-        }
-        else if (metaData.lights[i].type == LightType::LIGHT_POINT){
-            glUniform1i(lightTypeLocation, 2);
-        }
-        else if (metaData.lights[i].type == LightType::LIGHT_SPOT){
-            glUniform1i(lightTypeLocation, 3);
-        }
-        else {
-            glUniform1i(lightTypeLocation, 1);
-        }
-
-        // Normalize light direction
-        glm::vec3 normalizedLightDir = glm::normalize(-1.0f * glm::vec3(metaData.lights[i].dir));
-
-        // Set normalized lightDirection
-        GLint lightDirectionLocation = glGetUniformLocation(m_shader, (uniformName + ".lightDirection").c_str());
-        glUniform3fv(lightDirectionLocation, 1, glm::value_ptr(normalizedLightDir));
-
-        // Set lightColor
-        GLint lightColorLocation = glGetUniformLocation(m_shader, (uniformName + ".lightColor").c_str());
-        glUniform4fv(lightColorLocation, 1, glm::value_ptr(metaData.lights[i].color));
-
-        // Set lightPosition
-        GLint lightPositionLocation = glGetUniformLocation(m_shader, (uniformName + ".lightPosition").c_str());
-        glUniform4fv(lightPositionLocation, 1, glm::value_ptr(metaData.lights[i].pos));
-
-        // Set function
-        GLint lightFunctionLocation = glGetUniformLocation(m_shader, (uniformName + ".function").c_str());
-        glUniform3fv(lightFunctionLocation, 1, glm::value_ptr(metaData.lights[i].function));
-        // Set function
-        GLint lightAngleLocation = glGetUniformLocation(m_shader, (uniformName + ".angle").c_str());
-        glUniform1f(lightAngleLocation, metaData.lights[i].angle);
-        // Set function
-        GLint lightPenumbraLocation = glGetUniformLocation(m_shader, (uniformName + ".penumbra").c_str());
-        glUniform1f(lightPenumbraLocation, metaData.lights[i].penumbra);
-    }
-
-
-    for (const RenderShapeData& shape : metaData.shapes) {
-        int numVerticies = 0;
-
-        glUniformMatrix4fv(modelMatrixLocation, 1, GL_FALSE, glm::value_ptr(shape.ctm));
-
-
-        glUniform4fv(oaLocation, 1, glm::value_ptr(shape.primitive.material.cAmbient));
-        glUniform4fv(odLocation, 1, glm::value_ptr(shape.primitive.material.cDiffuse));
-
-        glUniform1f(shininessLocation, shape.primitive.material.shininess);
-        glUniform4fv(osLocation, 1, glm::value_ptr(shape.primitive.material.cSpecular));
-
-        // Adaptive LOD based on distance from camera implementation
-        // Commenting out to open up space for the extra credit slots
-//        if (settings.extraCredit2) {
-//            //May need to modify
-//            float distance = glm::length(glm::vec3(shape.ctm[3]) - glm::vec3(cameraPosition_worldspace));
-
-//            // For simplicity, let's use a linear drop-off from maxTessellation at distance 0 to minTessellation at a certain max distance.
-//            float maxDistance = 20.0f; // Maximum distance for tessellation adjustment
-//            float t = glm::clamp(distance / maxDistance, 0.0f, 1.0f);
-//            float tIn = glm::min(t, .8f);
-//            float lodFactor = (1.0f - tIn);
-//            EC2GlobalParam1 = int(float(settings.shapeParameter1) * lodFactor);
-
-//            EC2GlobalParam2 = int(float(settings.shapeParameter2) * lodFactor);
-
-//            //Task 17: Draw your VAO here
-
-//            sphere.updateParams(std::max(EC2GlobalParam1, 2), std::max(EC2GlobalParam2, 3));
-//            cube.updateParams(std::max(EC2GlobalParam1, 1));
-//            cone.updateParams(std::max(EC2GlobalParam1, 1), std::max(EC2GlobalParam2, 3));
-//            cylinder.updateParams(std::max(EC2GlobalParam1, 1), std::max(EC2GlobalParam2, 3));
-//        }
-
-        // Implemented fix to only update when the parameters change
-        if (needUpdate) {
-            generateShapes();
-        }
-
-        switch (shape.primitive.type) {
-        case PrimitiveType::PRIMITIVE_SPHERE:
-            glBindVertexArray(sphere_vao);
-            numVerticies = sphere.generateShape().size() / 6;
-
-            break;
-        case PrimitiveType::PRIMITIVE_CUBE:
-            glBindVertexArray(cube_vao);
-            numVerticies = cube.generateShape().size() / 6;
-
-
-            break;
-        case PrimitiveType::PRIMITIVE_CYLINDER:
-            glBindVertexArray(cylinder_vao);
-            numVerticies = cylinder.generateShape().size() / 6;
-
-
-            break;
-        case PrimitiveType::PRIMITIVE_CONE:
-            glBindVertexArray(cone_vao);
-            numVerticies = cone.generateShape().size() / 6;
-
-            break;
-        default:
-            break;
-        }
-
-        // Send the CTM to the shader
-        //glUniformMatrix4fv(ctm_location, 1, GL_FALSE, glm::value_ptr(shape.ctm));
-
-        glDrawArrays(GL_TRIANGLES, 0, numVerticies);
-        // Task 18: Unbind your VAO here
-        glBindVertexArray(0);
-
-
-    }
-
-
-    //generateShapes();
-
-    //    // Task 25: Bind the default framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER, m_defaultFBO);
-
-    // Check if FXAA should be applied
-    if (settings.extraCredit1) {
-        glUseProgram(m_fxaa_shader);
-
-        // Bind the scene texture
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_fbo_texture);
-
-        // Render a fullscreen quad
-        glBindVertexArray(m_fullscreen_vao);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        // Unbind everything
-        glBindTexture(GL_TEXTURE_2D, 0);
-        glBindVertexArray(0);
-        glUseProgram(0);
-    }
-
-    else {
-
-    //    // Task 26: Clear the color and depth buffers
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    //    // Task 27: Call paintTexture to draw our FBO color attachment texture | Task 31: Set bool parameter to true
-    paintTexture(m_fbo_texture, settings.perPixelFilter, settings.kernelBasedFilter, settings.extraCredit2, settings.extraCredit3);
-
-    }
-    // Unbind the shader
-    //glUseProgram(0);
 }
 
-// Task 31: Update the paintTexture function signature
-void Realtime::paintTexture(GLuint texture, bool postProcess1, bool postProcess2, bool postProcess3, bool postProcess4){
-    glUseProgram(m_texture_shader);
-    // Task 32: Set your bool uniform on whether or not to filter the texture drawn
-    GLint postProcessUniform = glGetUniformLocation(m_texture_shader, "u_filterTexture");
-    glUniform1i(postProcessUniform, postProcess1 ? 1 : 0); // Convert bool to int
 
-    // Task 32: Set your bool uniform on whether or not to filter the texture drawn
-    GLint boxFilterUniform = glGetUniformLocation(m_texture_shader, "u_filterBox");
-    glUniform1i(boxFilterUniform, postProcess2 ? 1 : 0); // Convert bool to int
-
-    // Extra Credit implementation
-    // Task 32: Set your bool uniform on whether or not to filter the texture drawn
-    GLint postProcessUniform2 = glGetUniformLocation(m_texture_shader, "u_filterTexture2");
-    glUniform1i(postProcessUniform2, postProcess3 ? 1 : 0); // Convert bool to int
-
-    // Task 32: Set your bool uniform on whether or not to filter the texture drawn
-    GLint boxFilterUniform2 = glGetUniformLocation(m_texture_shader, "u_filterBox2");
-    glUniform1i(boxFilterUniform2, postProcess4 ? 1 : 0); // Convert bool to int
-
-    glBindVertexArray(m_fullscreen_vao);
-    // Task 10: Bind "texture" to slot 0
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
-
-    // Now you can call glDrawArrays or any other drawing function
-    //glDrawArrays(GL_TRIANGLES, 0, 6);
-
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindTexture(GL_TEXTURE_2D, 0);
-    glBindVertexArray(0);
-    glUseProgram(0);
-}
 
 void Realtime::resizeGL(int w, int h) {
     // Tells OpenGL how big the screen is
@@ -699,27 +254,9 @@ void Realtime::resizeGL(int w, int h) {
     // May need to implement a change to perspective
 }
 
-void Realtime::sceneChanged() {
 
-    std::string iScenePath = settings.sceneFilePath;
-
-    bool success = SceneParser::parse(iScenePath, metaData);
-
-    if (!success) {
-        std::cerr << "Error loading scene: \"" << iScenePath << "\"" << std::endl;
-    }
-
-    // May need to change height and width
-
-    //camera = Camera(metaData.cameraData.pos, metaData.cameraData.look, metaData.cameraData.up, metaData.cameraData.heightAngle, int(size().width()) / int(size().height()), settings.nearPlane, settings.farPlane);
-    camera = Camera(metaData.cameraData.pos, metaData.cameraData.look, metaData.cameraData.up, metaData.cameraData.heightAngle, 1.0f * size().width() / size().height(), settings.nearPlane, settings.farPlane);
-    auto tempRenderData = metaData;
-
-    update(); // asks for a PaintGL() call to occur
-}
 
 void Realtime::settingsChanged() {
-    camera = Camera(metaData.cameraData.pos, metaData.cameraData.look, metaData.cameraData.up, metaData.cameraData.heightAngle, 1.0f * size().width() / size().height(), settings.nearPlane, settings.farPlane);
     update(); // asks for a PaintGL() call to occur
 }
 
@@ -729,24 +266,6 @@ void Realtime::keyPressEvent(QKeyEvent *event) {
     // Set the key state to true since it is being pressed
     m_keyMap[Qt::Key(event->key())] = true;
 
-    // Check if the key pressed is W, A, S, or D and print it
-//    switch (event->key()) {
-//    case Qt::Key_W:
-//        std::cout << "W key pressed" << std::endl;
-//        break;
-//    case Qt::Key_A:
-//        std::cout << "A key pressed" << std::endl;
-//        break;
-//    case Qt::Key_S:
-//        std::cout << "S key pressed" << std::endl;
-//        break;
-//    case Qt::Key_D:
-//        std::cout << "D key pressed" << std::endl;
-//        break;
-//    default:
-//        // Do nothing for other keys
-//        break;
-//    }
 }
 
 void Realtime::keyReleaseEvent(QKeyEvent *event) {

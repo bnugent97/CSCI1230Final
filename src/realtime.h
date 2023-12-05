@@ -14,7 +14,6 @@
 #include <QTime>
 #include <QTimer>
 
-#include "utils/sceneparser.h"
 
 class Realtime : public QOpenGLWidget
 {
@@ -43,7 +42,7 @@ private:
     void mouseMoveEvent(QMouseEvent *event) override;
     void timerEvent(QTimerEvent *event) override;
     void makeFBO();
-    void paintTexture(GLuint texture, bool postProcess1, bool postProcess2, bool postProcess3, bool postProcess4);
+
 
     // Tick Related Variables
     int m_timer;                                        // Stores timer which attempts to run ~60 times per second
@@ -57,8 +56,7 @@ private:
     // Device Correction Variables
     int m_devicePixelRatio;
 
-    // Global metadata variable
-    RenderData metaData;
+
     Camera camera;
 
     // Putting these here for now to enable the initial render of a sphere
