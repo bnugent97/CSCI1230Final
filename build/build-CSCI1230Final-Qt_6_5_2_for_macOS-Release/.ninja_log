@@ -1,0 +1,19 @@
+# ninja log v5
+0	55	1701800225629985111	StaticGLEW_autogen/timestamp	fa1f79843647c623
+0	55	1701800225629985111	StaticGLEW_autogen/mocs_compilation.cpp	fa1f79843647c623
+0	55	1701800225629985111	/Users/matt/Brown/Computer Graphics/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/StaticGLEW_autogen/timestamp	fa1f79843647c623
+0	55	1701800225629985111	/Users/matt/Brown/Computer Graphics/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/StaticGLEW_autogen/mocs_compilation.cpp	fa1f79843647c623
+55	95	1701800225678262304	CMakeFiles/StaticGLEW.dir/StaticGLEW_autogen/mocs_compilation.cpp.o	b2ffe138aa531ac8
+0	58563	1701800560042655906	CMakeFiles/StaticGLEW.dir/glew/src/glew.c.o	56fdbe07743d506b
+58564	58589	1701800560077839000	libStaticGLEW.a	620d258ef713a678
+58589	59057	1701800560537877146	CSCI1230Final_autogen/timestamp	a53d1ceb63ef53bf
+58589	59057	1701800560537877146	CSCI1230Final_autogen/mocs_compilation.cpp	a53d1ceb63ef53bf
+58589	59057	1701800560537877146	/Users/matt/Brown/Computer Graphics/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/timestamp	a53d1ceb63ef53bf
+58589	59057	1701800560537877146	/Users/matt/Brown/Computer Graphics/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/mocs_compilation.cpp	a53d1ceb63ef53bf
+59057	59199	1701800560685516841	CMakeFiles/CSCI1230Final.dir/src/camera.cpp.o	80f10ef8892f98c1
+59057	59327	1701800560811917494	CMakeFiles/CSCI1230Final.dir/src/settings.cpp.o	770ba44a6228bd71
+59057	59763	1701800561247201446	CMakeFiles/CSCI1230Final.dir/CSCI1230Final_autogen/mocs_compilation.cpp.o	36c9784efbac85de
+59057	59815	1701800561298981514	CMakeFiles/CSCI1230Final.dir/src/main.cpp.o	fb887da9d8515675
+59057	59905	1701800561388457940	CMakeFiles/CSCI1230Final.dir/src/mainwindow.cpp.o	8355f18a294a3200
+59057	59986	1701800561469706771	CMakeFiles/CSCI1230Final.dir/src/realtime.cpp.o	b0b034d7ccb1ea18
+59986	60085	1701800561569226899	CSCI1230Final	3302ae7fbb89a001
