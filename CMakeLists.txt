@@ -31,6 +31,7 @@ add_executable(${PROJECT_NAME}
     src/camera.cpp
     src/mainwindow.cpp
     src/settings.cpp
+    src/terraingenerator.cpp
 
 
 
@@ -41,6 +42,10 @@ add_executable(${PROJECT_NAME}
     src/settings.h
     src/utils/shaderloader.h
     src/utils/aspectratiowidget/aspectratiowidget.hpp
+    src/terraingenerator.h
+    resources/shaders/fragment.frag
+    resources/shaders/vertex.vert
+
 )
 
 # GLM: this creates its library and allows you to `#include "glm/..."`
@@ -65,6 +70,9 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
     PREFIX
         "/"
     FILES
+    resources/shaders/fragment.frag
+    resources/shaders/vertex.vert
+    
 
 )
 

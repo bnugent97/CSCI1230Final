@@ -14,6 +14,15 @@
 #include <QTime>
 #include <QTimer>
 
+// Including for terrain generation
+#include "GL/glew.h"
+#include <QOpenGLWidget>
+#include <QOpenGLVertexArrayObject>
+#include <QOpenGLBuffer>
+#include "terraingenerator.h"
+#include <QMatrix4x4>
+#include <QOpenGLShaderProgram>
+
 
 class Realtime : public QOpenGLWidget
 {
@@ -38,10 +47,13 @@ private:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    //void mouseReleaseEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-    void timerEvent(QTimerEvent *event) override;
-    void makeFBO();
+    //void timerEvent(QTimerEvent *event) override;
+    //void makeFBO();
+
+    void wheelEvent(QWheelEvent *event) override;
+
 
 
     // Tick Related Variables
@@ -104,6 +116,26 @@ private:
 
     GLuint m_fxaa_shader;
 
+    // Implementing for Terrain generation
+    void rebuildMatrices();
+
+    int m_xRot = 0;
+    int m_yRot = 0;
+    int m_zRot = 0;
+    QOpenGLShaderProgram *m_program = nullptr;
+    QOpenGLVertexArrayObject m_terrainVao;
+    QOpenGLBuffer m_terrainVbo;
+    QMatrix4x4 m_proj;
+    QMatrix4x4 m_camera;
+    QMatrix4x4 m_world;
+    TerrainGenerator m_terrain;
+    int m_projMatrixLoc = 0;
+    int m_mvMatrixLoc = 0;
+
+    QPoint m_prevMousePos;
+    float m_angleX;
+    float m_angleY;
+    float m_zoom = 1.0f;
 
 
 };

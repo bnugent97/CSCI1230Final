@@ -1,5 +1,6 @@
 /Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Debug/CMakeFiles/CSCI1230Final.dir
 /Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Debug/CMakeFiles/StaticGLEW.dir
+/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Debug/CMakeFiles/CSCI1230Final_other_files.dir
 /Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Debug/CMakeFiles/edit_cache.dir
 /Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Debug/CMakeFiles/rebuild_cache.dir
 /Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Debug/CMakeFiles/list_install_components.dir
