@@ -1,1 +1,4 @@
-/build/
+build/
+
+# Required for Qt Creator w/ CMake
+CMakeLists.txt.user*
