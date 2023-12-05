@@ -1,4 +1,5 @@
 # ninja log v5
+<<<<<<< HEAD
 0	55	1701800225629985111	StaticGLEW_autogen/timestamp	fa1f79843647c623
 0	55	1701800225629985111	StaticGLEW_autogen/mocs_compilation.cpp	fa1f79843647c623
 0	55	1701800225629985111	/Users/matt/Brown/Computer Graphics/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/StaticGLEW_autogen/timestamp	fa1f79843647c623
@@ -17,3 +18,70 @@
 59057	59905	1701800561388457940	CMakeFiles/CSCI1230Final.dir/src/mainwindow.cpp.o	8355f18a294a3200
 59057	59986	1701800561469706771	CMakeFiles/CSCI1230Final.dir/src/realtime.cpp.o	b0b034d7ccb1ea18
 59986	60085	1701800561569226899	CSCI1230Final	3302ae7fbb89a001
+=======
+13	29	1701802193888678944	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/.rcc/qrc_Resources.cpp	90020604616fbe0b
+31573	31613	1701800466275034000	libStaticGLEW.a	c61a2c7eff3c8b35
+44	467	1701806767927966170	CMakeFiles/CSCI1230Final.dir/src/terraingenerator.cpp.o	5640f9c3ecf169a2
+467	621	1701806768083508803	CSCI1230Final	b7a18cb268334731
+13	42	1701802129450384764	StaticGLEW_autogen/timestamp	c11bae22d726fb6a
+499	1599	1701806372917447853	CMakeFiles/CSCI1230Final.dir/src/realtime.cpp.o	8b4f678b8c2a7ec8
+13	42	1701802129450384764	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/StaticGLEW_autogen/timestamp	c11bae22d726fb6a
+499	1444	1701806372762348843	CMakeFiles/CSCI1230Final.dir/src/main.cpp.o	6b6597aac45aa881
+13	42	1701802129450384764	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/StaticGLEW_autogen/mocs_compilation.cpp	c11bae22d726fb6a
+13	29	1701802193888678944	.rcc/qrc_Resources.cpp	90020604616fbe0b
+56	86	1701800434747241542	CMakeFiles/StaticGLEW.dir/StaticGLEW_autogen/mocs_compilation.cpp.o	ccf3108ce879f1bf
+8	40	1701806767505877146	CSCI1230Final_autogen/timestamp	776c098af9aeb74
+8	40	1701806767505877146	CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+499	1420	1701806372738515809	CMakeFiles/CSCI1230Final.dir/CSCI1230Final_autogen/mocs_compilation.cpp.o	aa2cad6a6e8aeb46
+8	40	1701806767505877146	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/timestamp	776c098af9aeb74
+29	59	1701802193918394008	CMakeFiles/CSCI1230Final.dir/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/.rcc/qrc_Resources.cpp.o	feae584e42177950
+8	40	1701806767505877146	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+13	42	1701802129450384764	StaticGLEW_autogen/mocs_compilation.cpp	c11bae22d726fb6a
+1	309	1701802130929323059	build.ninja	32b60ef71313c94e
+56	31573	1701800466221856598	CMakeFiles/StaticGLEW.dir/glew/src/glew.c.o	97a00b9240210c65
+499	1532	1701806372850558768	CMakeFiles/CSCI1230Final.dir/src/mainwindow.cpp.o	4fd16cefb15388
+32189	32339	1701800466998542764	CMakeFiles/CSCI1230Final.dir/src/camera.cpp.o	fc9d4d511b92369c
+32190	32507	1701800467165420902	CMakeFiles/CSCI1230Final.dir/src/settings.cpp.o	aaffb7167acdfaf0
+8	39	1701806783714923346	CSCI1230Final_autogen/timestamp	776c098af9aeb74
+8	39	1701806783714923346	CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+8	39	1701806783714923346	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/timestamp	776c098af9aeb74
+8	39	1701806783714923346	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+44	459	1701806784130331448	CMakeFiles/CSCI1230Final.dir/src/terraingenerator.cpp.o	5640f9c3ecf169a2
+459	620	1701806784292129130	CSCI1230Final	b7a18cb268334731
+9	40	1701806810030451575	CSCI1230Final_autogen/timestamp	776c098af9aeb74
+9	40	1701806810030451575	CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+9	40	1701806810030451575	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/timestamp	776c098af9aeb74
+9	40	1701806810030451575	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+44	471	1701806810457636154	CMakeFiles/CSCI1230Final.dir/src/terraingenerator.cpp.o	5640f9c3ecf169a2
+471	637	1701806810623570063	CSCI1230Final	b7a18cb268334731
+8	39	1701806823590646490	CSCI1230Final_autogen/timestamp	776c098af9aeb74
+8	39	1701806823590646490	CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+8	39	1701806823590646490	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/timestamp	776c098af9aeb74
+8	39	1701806823590646490	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+43	451	1701806823998472718	CMakeFiles/CSCI1230Final.dir/src/terraingenerator.cpp.o	5640f9c3ecf169a2
+451	628	1701806824175613523	CSCI1230Final	b7a18cb268334731
+8	38	1701806834932308973	CSCI1230Final_autogen/timestamp	776c098af9aeb74
+8	38	1701806834932308973	CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+8	38	1701806834932308973	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/timestamp	776c098af9aeb74
+8	38	1701806834932308973	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+43	466	1701806835354978409	CMakeFiles/CSCI1230Final.dir/src/terraingenerator.cpp.o	5640f9c3ecf169a2
+466	644	1701806835533342124	CSCI1230Final	b7a18cb268334731
+12	44	1701806846206849537	CSCI1230Final_autogen/timestamp	776c098af9aeb74
+12	44	1701806846206849537	CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+12	44	1701806846206849537	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/timestamp	776c098af9aeb74
+12	44	1701806846206849537	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+48	413	1701806846573229371	CMakeFiles/CSCI1230Final.dir/src/terraingenerator.cpp.o	5640f9c3ecf169a2
+413	548	1701806846707363166	CSCI1230Final	b7a18cb268334731
+13	44	1701809955762074555	CSCI1230Final_autogen/timestamp	776c098af9aeb74
+13	44	1701809955762074555	CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+13	44	1701809955762074555	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/timestamp	776c098af9aeb74
+13	44	1701809955762074555	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+48	604	1701809956318530853	CMakeFiles/CSCI1230Final.dir/src/terraingenerator.cpp.o	5640f9c3ecf169a2
+604	771	1701809956485147449	CSCI1230Final	b7a18cb268334731
+8	42	1701810029317650798	CSCI1230Final_autogen/timestamp	776c098af9aeb74
+8	42	1701810029317650798	CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+8	42	1701810029317650798	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/timestamp	776c098af9aeb74
+8	42	1701810029317650798	/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Release/CSCI1230Final_autogen/mocs_compilation.cpp	776c098af9aeb74
+47	480	1701810029751462519	CMakeFiles/CSCI1230Final.dir/src/terraingenerator.cpp.o	5640f9c3ecf169a2
+480	651	1701810029922468500	CSCI1230Final	b7a18cb268334731
+>>>>>>> 2e57855 (push test)
