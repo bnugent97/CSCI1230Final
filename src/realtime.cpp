@@ -42,6 +42,8 @@ Realtime::Realtime(QWidget *parent)
     m_keyMap[Qt::Key_Space]   = false;
 
     // If you must use this function, do not edit anything above this
+    m_elapsedTimer.start();
+    startTimer(16); // Approximately 60 frames per second
 }
 
 void Realtime::finish() {
@@ -59,10 +61,8 @@ void Realtime::finish() {
     this->doneCurrent();
 }
 
-
-
-
-void Realtime::initializeGL() {
+void Realtime::initializeGL()
+{
     // GLEW is a library which provides an implementation for the OpenGL API
     // Here, we are setting it up
     glewExperimental = GL_TRUE;
@@ -113,11 +113,14 @@ void Realtime::initializeGL() {
     m_camera.lookAt(QVector3D(1,1,1),QVector3D(0,0,0),QVector3D(0,0,1));
 
     m_program->release();
+
+    // dont know if it should be like this
+    m_elapsedTimer.start();
+    rebuildMatrices();
 }
 
-
-
-void Realtime::paintGL() {
+void Realtime::paintGL()
+{
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
@@ -126,21 +129,18 @@ void Realtime::paintGL() {
     m_program->setUniformValue(m_mvMatrixLoc, m_camera * m_world);
     m_program->setUniformValue(m_program->uniformLocation("wireshade"),m_terrain.m_wireshade);
 
-    int res = m_terrain.getResolution();
+    int resX = m_terrain.getResolutionX();
+    int resY = m_terrain.getResolutionY();
 
 
     glPolygonMode(GL_FRONT_AND_BACK,m_terrain.m_wireshade? GL_LINE : GL_FILL);
-    glDrawArrays(GL_TRIANGLES, 0, res * res * 6);
+    glDrawArrays(GL_TRIANGLES, 0, resX * resY * 6);
 
     m_program->release();
 }
 
-
-
-void Realtime::resizeGL(int w, int h) {
-    // Tells OpenGL how big the screen is
-    //glViewport(0, 0, size().width() * m_devicePixelRatio, size().height() * m_devicePixelRatio);
-
+void Realtime::resizeGL(int w, int h)
+{
     m_proj.setToIdentity();
     m_proj.perspective(45.0f, GLfloat(w) / h, 0.01f, 100.0f);
 }
@@ -150,12 +150,11 @@ void Realtime::mousePressEvent(QMouseEvent *event) {
 }
 
 void Realtime::mouseMoveEvent(QMouseEvent *event) {
-    if (event->buttons() & Qt::LeftButton) {
-        m_angleX += 10 * (event->position().x() - m_prevMousePos.x()) / (float) width();
-        m_angleY += 10 * (event->position().y() - m_prevMousePos.y()) / (float) height();
-        m_prevMousePos = event->pos();
-        rebuildMatrices();
-    }
+    m_angleX += 10 * (event->position().x() - m_prevMousePos.x()) / (float) width();
+    m_angleY += 10 * (event->position().y() - m_prevMousePos.y()) / (float) height();
+    m_prevMousePos = event->pos();
+
+    rebuildMatrices();
 }
 
 void Realtime::wheelEvent(QWheelEvent *event) {
@@ -163,20 +162,56 @@ void Realtime::wheelEvent(QWheelEvent *event) {
     rebuildMatrices();
 }
 
+void Realtime::keyPressEvent(QKeyEvent *event) {
+    m_keyMap[Qt::Key(event->key())] = true;
+}
+
+void Realtime::keyReleaseEvent(QKeyEvent *event) {
+    m_keyMap[Qt::Key(event->key())] = false;
+}
+
+
+void Realtime::moveCamera(float deltaX, float deltaZ) {
+    // Calculate the inverse of the camera matrix to get the transformation matrix
+    QMatrix4x4 inverseCamera = m_camera.inverted();
+
+    // Extract the position from the transformation matrix
+    QVector3D position = inverseCamera.column(3).toVector3D();
+
+    // Update the position
+    position.setX(position.x() + deltaX);
+    position.setZ(position.z() + deltaZ);
+
+    // Reconstruct the view matrix with the new position
+    m_camera.setToIdentity();
+    m_camera.lookAt(position, QVector3D(0, 0, 0), QVector3D(0, 0, 1));
+
+    update(); // Request a redraw
+}
+
 void Realtime::rebuildMatrices() {
     m_camera.setToIdentity();
-    QMatrix4x4 rot;
-    rot.setToIdentity();
-    rot.rotate(-10 * m_angleX,QVector3D(0,0,1));
-    QVector3D eye = QVector3D(1,1,1);
-    eye = rot.map(eye);
-    rot.setToIdentity();
-    rot.rotate(-10 * m_angleY,QVector3D::crossProduct(QVector3D(0,0,1),eye));
-    eye = rot.map(eye);
 
-    eye = eye * m_zoom;
+    // Set camera position
+    QVector3D eye(-6.40213e-08, 0.759503, -0.0629183);
 
-    m_camera.lookAt(eye,QVector3D(0,0,0),QVector3D(0,0,1));
+    // Set camera direction
+    QVector3D direction(8.40059e-08, -0.996586, 0.0825587);
+
+    // Calculate the target position by adding the direction to the eye position
+    QVector3D target = eye + direction;
+
+    //    std::cout << "Camera Position: "
+    //              << eye.x() << ", "
+    //              << eye.y() << ", "
+    //              << eye.z() << std::endl;
+    //    std::cout << "Camera Direction: "
+    //              << direction.x() << ", "
+    //              << direction.y() << ", "
+    //              << direction.z() << std::endl;
+
+    // Set the camera to look at the target
+    m_camera.lookAt(eye, target, QVector3D(0, 0, 1));
 
     m_proj.setToIdentity();
     m_proj.perspective(45.0f, 1.0 * width() / height(), 0.01f, 100.0f);
@@ -184,23 +219,65 @@ void Realtime::rebuildMatrices() {
     update();
 }
 
+void Realtime::timerEvent(QTimerEvent *event) {
+    float deltaTime = m_elapsedTimer.elapsed() * 0.001f; // Convert milliseconds to seconds
+    m_elapsedTimer.restart();
+
+    float moveSpeed = 1.0f; // Adjust as needed
+    float moveDistance = moveSpeed * deltaTime;
+
+    QVector3D forward = -m_camera.column(2).toVector3D().normalized();
+    QVector3D right = QVector3D::crossProduct(QVector3D(0, 0, 1), forward).normalized();
+
+    // Remove vertical component from the forward vector
+    forward.setZ(0);
+    forward.normalize();
+
+    // Calculate the inverse of the camera matrix to get the transformation matrix
+    QMatrix4x4 inverseCamera = m_camera.inverted();
+
+    // Extract the position from the transformation matrix
+    QVector3D position = inverseCamera.column(3).toVector3D();
+
+    QVector3D movement(0.0f, 0.0f, 0.0f);
+
+    if (m_keyMap[Qt::Key_W]) {
+        movement += forward * moveDistance;
+    }
+    if (m_keyMap[Qt::Key_S]) {
+        movement -= forward * moveDistance;
+    }
+    if (m_keyMap[Qt::Key_A]) {
+        movement -= right * moveDistance;
+    }
+    if (m_keyMap[Qt::Key_D]) {
+        movement += right * moveDistance;
+    }
+
+    QVector3D newPosition = position + movement;
+    m_camera.setToIdentity();
+    m_camera.lookAt(newPosition, newPosition + forward, QVector3D(0, 0, 1));
+
+    update();
+}
 
 
 void Realtime::settingsChanged() {
     update(); // asks for a PaintGL() call to occur
 }
 
-// ================== Project 6: Action!
 
-void Realtime::keyPressEvent(QKeyEvent *event) {
-    // Set the key state to true since it is being pressed
-    m_keyMap[Qt::Key(event->key())] = true;
+//// ================== Project 6: Action!
 
-}
+//void Realtime::keyPressEvent(QKeyEvent *event) {
+//    // Set the key state to true since it is being pressed
+//    m_keyMap[Qt::Key(event->key())] = true;
 
-void Realtime::keyReleaseEvent(QKeyEvent *event) {
-    m_keyMap[Qt::Key(event->key())] = false;
-}
+//}
+
+//void Realtime::keyReleaseEvent(QKeyEvent *event) {
+//    m_keyMap[Qt::Key(event->key())] = false;
+//}
 
 //void Realtime::mousePressEvent(QMouseEvent *event) {
 //    if (event->buttons().testFlag(Qt::LeftButton)) {
@@ -215,39 +292,6 @@ void Realtime::keyReleaseEvent(QKeyEvent *event) {
 //    }
 //}
 
-//void Realtime::mouseMoveEvent(QMouseEvent *event) {
-//    if (m_mouseDown) {
-//        int posX = event->position().x();
-//        int posY = event->position().y();
-//        int deltaX = posX - m_prev_mouse_pos.x;
-//        int deltaY = posY - m_prev_mouse_pos.y;
-//        m_prev_mouse_pos = glm::vec2(posX, posY);
 
-//        // Sensitivity factor for rotation (adjust as needed)
-//        float sensitivity = 0.1f;
-
-//        // Compute rotation angles in radians
-//        float yaw = -glm::radians(sensitivity * deltaX);
-//        float pitch = glm::radians(sensitivity * deltaY);
-
-//        // Get rotation axes
-//        glm::vec3 rightVector = glm::normalize(glm::cross(camera.getUp(), camera.getTarget() - camera.getPosition()));
-//        glm::vec3 worldUp(0.0f, 1.0f, 0.0f);
-
-//        // Compute new look direction
-//        glm::vec3 lookDirection = camera.getTarget() - camera.getPosition();
-
-//        // Apply Rodrigues' rotation formula for yaw (around world up vector)
-//        lookDirection = lookDirection * cos(yaw) + glm::cross(worldUp, lookDirection) * sin(yaw) + worldUp * glm::dot(worldUp, lookDirection) * (1 - cos(yaw));
-
-//        // Apply Rodrigues' rotation formula for pitch (around right vector)
-//        lookDirection = lookDirection * cos(pitch) + glm::cross(rightVector, lookDirection) * sin(pitch) + rightVector * glm::dot(rightVector, lookDirection) * (1 - cos(pitch));
-
-//        // Update camera target
-//        camera.target = camera.getPosition() + lookDirection;
-
-//        update(); // Request a PaintGL() call
-//    }
-//}
 
 

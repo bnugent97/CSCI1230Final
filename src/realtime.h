@@ -137,5 +137,9 @@ private:
     float m_angleY;
     float m_zoom = 1.0f;
 
+    void moveCamera(float deltaX, float deltaZ);
+    void timerEvent(QTimerEvent *event) override;
+    float m_moveSpeed = 0.1f;
+
 
 };
