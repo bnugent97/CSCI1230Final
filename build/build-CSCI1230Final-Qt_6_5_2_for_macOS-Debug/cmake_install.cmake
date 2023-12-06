@@ -1,4 +1,4 @@
-# Install script for directory: /Users/brennannugent/CS2230/CSCI1230Final
+# Install script for directory: /Users/matt/Brown/Computer Graphics/CSCI1230Final
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,12 +34,12 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/usr/bin/objdump")
+  set(CMAKE_OBJDUMP "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/objdump")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Debug/glm/cmake_install.cmake")
+  include("/Users/matt/Brown/Computer Graphics/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Debug/glm/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/Users/brennannugent/CS2230/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/Users/matt/Brown/Computer Graphics/CSCI1230Final/build/build-CSCI1230Final-Qt_6_5_2_for_macOS-Debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
