@@ -11,7 +11,9 @@ TerrainGenerator::TerrainGenerator()
     m_wireshade = false; // TA SOLUTION
 
     // Define resolution of terrain generation
-    m_resolution = 200;
+    m_resolutionX = 200;
+    m_resolutionY = 5000;
+
 
     // Generate random vector lookup table
     m_lookupSize = 1024;
@@ -46,10 +48,10 @@ void addPointToVector(glm::vec3 point, std::vector<float>& vector) {
 // Generates the geometry of the output triangle mesh
 std::vector<float> TerrainGenerator::generateTerrain() {
     std::vector<float> verts;
-    verts.reserve(m_resolution * m_resolution * 6);
+    verts.reserve(m_resolutionX * m_resolutionY * 6);
 
-    for(int x = 0; x < m_resolution; x++) {
-        for(int y = 0; y < m_resolution; y++) {
+    for(int x = 0; x < m_resolutionX; x++) {
+        for(int y = 0; y < m_resolutionY; y++) {
             int x1 = x;
             int y1 = y;
 
@@ -113,12 +115,14 @@ glm::vec2 TerrainGenerator::sampleRandomVector(int row, int col)
 // Takes a grid coordinate (row, col), [0, m_resolution), which describes a vertex in a plane mesh
 // Returns a normalized position (x, y, z); x and y in range from [0, 1), and z is obtained from getHeight()
 glm::vec3 TerrainGenerator::getPosition(int row, int col) {
-    float scale = 1.0; // Scale factor to increase the rendered area
+    float scale_x = 2.0; // Adjust this scale for the x-axis
+    float scale_y = 50.0; // Adjust this scale for the y-axis
 
     // Adjust the normalization to scale around the center
-    float halfRes = m_resolution / 2.0f;
-    float x = ((row - halfRes) * scale + halfRes) / m_resolution;
-    float y = ((col - halfRes) * scale + halfRes) / m_resolution;
+    float halfResX = m_resolutionX / 2.0f;
+    float halfResY = m_resolutionY / 2.0f;
+    float x = ((row - halfResX) * scale_x + halfResX) / m_resolutionX;
+    float y = ((col - halfResY) * scale_y + halfResY) / m_resolutionY;
     float z = getHeight(x, y);
 
     return glm::vec3(x, y, z);

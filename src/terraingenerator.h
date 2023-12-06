@@ -10,7 +10,8 @@ public:
 
     TerrainGenerator();
     ~TerrainGenerator();
-    int getResolution() { return m_resolution; };
+    int getResolutionX() { return m_resolutionX; };
+    int getResolutionY() { return m_resolutionY; };
     std::vector<float> generateTerrain();
     bool isInCentralRegion(float x, float y);
 
@@ -18,7 +19,8 @@ private:
 
     // Member variables for terrain generation. You will not need to use these directly.
     std::vector<glm::vec2> m_randVecLookup;
-    int m_resolution;
+    int m_resolutionX;
+    int m_resolutionY;
     int m_lookupSize;
 
     // Samples the (infinite) random vector grid at (row, col)
