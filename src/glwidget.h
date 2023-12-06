@@ -1,5 +1,6 @@
 #pragma once
 
+#include <QElapsedTimer>
 #include "GL/glew.h"
 #include <QOpenGLWidget>
 #include <QOpenGLVertexArrayObject>
@@ -27,6 +28,7 @@ protected:
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
     void moveCamera(float deltaZ, float deltaX);
+    void timerEvent(QTimerEvent *event) override;
 
 private:
     void rebuildMatrices();
@@ -50,5 +52,8 @@ private:
     float m_zoom;
 
     float m_moveSpeed = 0.1f;
+    QElapsedTimer m_elapsedTimer;
+    std::unordered_map<Qt::Key, bool> m_keyMap;
+
 
 };

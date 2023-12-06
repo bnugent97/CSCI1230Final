@@ -10,10 +10,11 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 GLWidget::GLWidget(QWidget *parent)
-    : QOpenGLWidget(parent), m_angleX(0), m_angleY(0), m_zoom(1.0) {
+    : QOpenGLWidget(parent) {
     setFocusPolicy(Qt::StrongFocus);
+    m_elapsedTimer.start();
+    startTimer(16); // Approximately 60 frames per second
 }
-
 GLWidget::~GLWidget() {}
 
 void GLWidget::initializeGL()
@@ -70,6 +71,7 @@ void GLWidget::initializeGL()
     m_program->release();
 
     // dont know if it should be like this
+    m_elapsedTimer.start();
     rebuildMatrices();
 }
 
@@ -116,27 +118,13 @@ void GLWidget::wheelEvent(QWheelEvent *event) {
 }
 
 void GLWidget::keyPressEvent(QKeyEvent *event) {
-    switch(event->key()) {
-    case Qt::Key_W:
-        moveCamera(0, m_moveSpeed); // Move forward
-        break;
-    case Qt::Key_S:
-        moveCamera(0, -m_moveSpeed); // Move backward
-        break;
-    case Qt::Key_A:
-        moveCamera(m_moveSpeed, 0); // Move left
-        break;
-    case Qt::Key_D:
-        moveCamera(-m_moveSpeed, 0); // Move right
-        break;
-    default:
-        QWidget::keyPressEvent(event);
-    }
+    m_keyMap[Qt::Key(event->key())] = true;
 }
+
 void GLWidget::keyReleaseEvent(QKeyEvent *event) {
-    // Handle key release if needed
-    QWidget::keyReleaseEvent(event);
+    m_keyMap[Qt::Key(event->key())] = false;
 }
+
 
 void GLWidget::moveCamera(float deltaX, float deltaZ) {
     // Calculate the inverse of the camera matrix to get the transformation matrix
@@ -221,3 +209,42 @@ void GLWidget::rebuildMatrices() {
 
     update();
 }*/
+
+
+void GLWidget::timerEvent(QTimerEvent *event) {
+    float deltaTime = m_elapsedTimer.elapsed() * 0.001f; // Convert milliseconds to seconds
+    m_elapsedTimer.restart();
+
+    float moveSpeed = 1.0f; // Adjust as needed
+    float moveDistance = moveSpeed * deltaTime;
+
+    QVector3D forward = -m_camera.column(2).toVector3D().normalized();
+    QVector3D right = QVector3D::crossProduct(QVector3D(0, 0, 1), forward).normalized();
+
+    // Calculate the inverse of the camera matrix to get the transformation matrix
+    QMatrix4x4 inverseCamera = m_camera.inverted();
+
+    // Extract the position from the transformation matrix
+    QVector3D position = inverseCamera.column(3).toVector3D();
+
+    QVector3D movement(0.0f, 0.0f, 0.0f);
+
+    if (m_keyMap[Qt::Key_W]) {
+        movement += forward * moveDistance;
+    }
+    if (m_keyMap[Qt::Key_S]) {
+        movement -= forward * moveDistance;
+    }
+    if (m_keyMap[Qt::Key_A]) {
+        movement -= right * moveDistance;
+    }
+    if (m_keyMap[Qt::Key_D]) {
+        movement += right * moveDistance;
+    }
+
+    QVector3D newPosition = position + movement;
+    m_camera.setToIdentity();
+    m_camera.lookAt(newPosition, newPosition + forward, QVector3D(0, 0, 1));
+
+    update();
+}
