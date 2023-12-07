@@ -50,6 +50,13 @@ add_executable(${PROJECT_NAME}
     src/simplexnoise.h src/simplexnoise.cpp
     resources/shaders/skybox.vert
     resources/shaders/skybox.frag
+    resources/shaders/night.jpeg
+    resources/shaders/evening.jpeg
+    resources/shaders/day.jpeg
+    resources/shaders/rainbowThrowup.png
+
+
+
 
 
 )
@@ -80,6 +87,12 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
     resources/shaders/vertex.vert
     resources/shaders/skybox.vert
     resources/shaders/skybox.frag
+    resources/shaders/night.jpeg
+    resources/shaders/evening.jpeg
+    resources/shaders/day.jpeg
+    resources/shaders/rainbowThrowup.png
+
+
 )
 
 # GLEW: this provides support for Windows (including 64-bit)

@@ -202,12 +202,46 @@ void Realtime::initializeGL()
 
     // Load skybox textures
     std::vector<std::string> faces{
-        "/Users/brennannugent/CS2230/CSCI1230Final/resources/skyboxTextures/front.png",
-        "/Users/brennannugent/CS2230/CSCI1230Final/resources/skyboxTextures/back.png",
-        "/Users/brennannugent/CS2230/CSCI1230Final/resources/skyboxTextures/left.png",
-        "/Users/brennannugent/CS2230/CSCI1230Final/resources/skyboxTextures/right.png",
-        "/Users/brennannugent/CS2230/CSCI1230Final/resources/skyboxTextures/top.png",
-        "/Users/brennannugent/CS2230/CSCI1230Final/resources/skyboxTextures/bottom.png"
+
+
+
+//        ":/resources/skyboxTextures/front.png",
+//        ":/resources/skyboxTextures/back.png",
+//        ":/resources/skyboxTextures/left.png",
+//        ":/resources/skyboxTextures/right.png",
+//        ":/resources/skyboxTextures/top.png",
+//        ":/resources/skyboxTextures/bottom.png"
+
+//        ":/resources/shaders/night.jpeg",
+//        ":/resources/shaders/night.jpeg",
+//        ":/resources/shaders/night.jpeg",
+//        ":/resources/shaders/night.jpeg",
+//        ":/resources/shaders/night.jpeg",
+//        ":/resources/shaders/night.jpeg",
+
+//        ":/resources/shaders/evening.jpeg",
+//        ":/resources/shaders/evening.jpeg",
+//        ":/resources/shaders/evening.jpeg",
+//        ":/resources/shaders/evening.jpeg",
+//        ":/resources/shaders/evening.jpeg",
+//        ":/resources/shaders/evening.jpeg",
+
+
+//        ":/resources/shaders/day.jpeg",
+//        ":/resources/shaders/day.jpeg",
+//        ":/resources/shaders/day.jpeg",
+//        ":/resources/shaders/day.jpeg",
+//        ":/resources/shaders/day.jpeg",
+//        ":/resources/shaders/day.jpeg",
+
+        ":/resources/shaders/rainbowThrowup.png",
+        ":/resources/shaders/rainbowThrowup.png",
+        ":/resources/shaders/rainbowThrowup.png",
+        ":/resources/shaders/rainbowThrowup.png",
+        ":/resources/shaders/rainbowThrowup.png",
+        ":/resources/shaders/rainbowThrowup.png",
+
+
     };
     m_skyboxTexture = loadSkyBoxTextures(faces);
 
