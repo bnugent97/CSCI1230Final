@@ -45,6 +45,10 @@ add_executable(${PROJECT_NAME}
     src/terraingenerator.h
     resources/shaders/fragment.frag
     resources/shaders/vertex.vert
+    water.frag
+    water.vert
+    src/simplexnoise.h src/simplexnoise.cpp
+
 
 )
 

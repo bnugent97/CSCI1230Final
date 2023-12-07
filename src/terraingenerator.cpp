@@ -3,6 +3,7 @@
 #include <cmath>
 #include "glm/glm.hpp"
 #include <glm/gtc/random.hpp>>
+#include <array>
 
 
 // Constructor
@@ -11,7 +12,7 @@ TerrainGenerator::TerrainGenerator()
     m_wireshade = false; // TA SOLUTION
 
     // Define resolution of terrain generation
-    m_resolutionX = 200;
+    m_resolutionX = 250;
     m_resolutionY = 5000;
 
 
@@ -143,6 +144,7 @@ float TerrainGenerator::getHeight(float x, float y) {
     // Calculate the offset for the "valley"
     float xOffset = 0.0f; // No horizontal offset
     float yOffset = 0.0f; // No vertical offset
+    SimplexNoise noise;
 
     // Apply offsets to x and y
     x += xOffset;
@@ -160,12 +162,12 @@ float TerrainGenerator::getHeight(float x, float y) {
     float smoothFactor = glm::smoothstep(0.0f, centralWidth / 0.25f, abs(x - 0.5f));
 
     // Task 7: combine multiple different octaves of noise to produce fractal perlin noise
-    float totalHeight = 0.0f;
-    float amplitude = 1.0f;
-    float frequency = 1.0f;
+    float totalHeight = 0.25f;
+    float amplitude = 0.30f;
+    float frequency = 1.f;
 
     for (int octave = 0; octave < 4; ++octave) {
-        totalHeight += amplitude * computePerlin(x * frequency, y * frequency);
+        totalHeight += amplitude * float(noise.signedRawNoise( x * frequency, y * frequency ));
         amplitude *= 0.5f;
         frequency *= 2.0f;
     }
@@ -206,14 +208,25 @@ glm::vec3 TerrainGenerator::getNormal(int row, int col) {
 
 // Computes color of vertex using normal and, optionally, position
 glm::vec3 TerrainGenerator::getColor(glm::vec3 normal, glm::vec3 position) {
-    float verticalThreshold = 0.85f; // You can adjust this threshold value
-    float dotProduct = glm::dot(normal, glm::vec3(0, 0, 1)); // Dot product with up vector
-    if (dotProduct > verticalThreshold) {
-        return glm::vec3(1, 1, 1); // White color if normal is close to vertical
+    // Adjust these thresholds according to your terrain's height range
+    float snowHeight = 0.35f; // Height above which terrain is snow
+    float dirtHeight = 0.2f; // Height above which terrain is dirt and below which it is snow
+    float road = -0.1f;
+
+    // Use the z component of position to determine the height
+    float height = position.z;
+
+    if (height > snowHeight) {
+        return glm::vec3(1, 1, 1); // Snow (white)
+    } else if (height > dirtHeight) {
+        return glm::vec3(0.7, 0.48, 0.32); // Dirt (brown)
+    } else if (height >= road && height < -0.099999994f ) {
+        return glm::vec3(0.38,0.38,0.38); // road
     } else {
-        return glm::vec3(0.5, 0.5, 0.5); // Gray color otherwise
+        return glm::vec3(0.2, 0.5, 0.2); // Grass (green)
     }
 }
+
 
 // Computes the intensity of Perlin noise at some point
 float TerrainGenerator::computePerlin(float x, float y) {
@@ -244,6 +257,6 @@ float TerrainGenerator::computePerlin(float x, float y) {
 
     // Task 5: Debug this line to properly use your interpolation function to produce the correct value
     return interpolate(interpolate(A, B, offsetTLx), interpolate(D, C, offsetTLx), offsetTLy);
-    //return interpolate(interpolate(A, B, 0.5), interpolate(D, C, 0.5), 0.5);
-
 }
+
+

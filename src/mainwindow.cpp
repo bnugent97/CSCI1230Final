@@ -64,12 +64,12 @@ void MainWindow::initialize() {
     p1Slider = new QSlider(Qt::Orientation::Horizontal); // Parameter 1 slider
     p1Slider->setTickInterval(1);
     p1Slider->setMinimum(1);
-    p1Slider->setMaximum(25);
+    p1Slider->setMaximum(10);
     p1Slider->setValue(1);
 
     p1Box = new QSpinBox();
     p1Box->setMinimum(1);
-    p1Box->setMaximum(25);
+    p1Box->setMaximum(10);
     p1Box->setSingleStep(1);
     p1Box->setValue(1);
 

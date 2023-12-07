@@ -25,8 +25,6 @@
 
 // ================== Project 5: Lights, Camera
 
-
-
 Realtime::Realtime(QWidget *parent)
     : QOpenGLWidget(parent)
 {
@@ -146,15 +144,15 @@ void Realtime::resizeGL(int w, int h)
 }
 
 void Realtime::mousePressEvent(QMouseEvent *event) {
-    m_prevMousePos = event->pos();
+//    m_prevMousePos = event->pos();
 }
 
 void Realtime::mouseMoveEvent(QMouseEvent *event) {
-    m_angleX += 10 * (event->position().x() - m_prevMousePos.x()) / (float) width();
-    m_angleY += 10 * (event->position().y() - m_prevMousePos.y()) / (float) height();
-    m_prevMousePos = event->pos();
+//    m_angleX += 10 * (event->position().x() - m_prevMousePos.x()) / (float) width();
+//    m_angleY += 10 * (event->position().y() - m_prevMousePos.y()) / (float) height();
+//    m_prevMousePos = event->pos();
 
-    rebuildMatrices();
+//    rebuildMatrices();
 }
 
 void Realtime::wheelEvent(QWheelEvent *event) {
@@ -169,7 +167,6 @@ void Realtime::keyPressEvent(QKeyEvent *event) {
 void Realtime::keyReleaseEvent(QKeyEvent *event) {
     m_keyMap[Qt::Key(event->key())] = false;
 }
-
 
 void Realtime::moveCamera(float deltaX, float deltaZ) {
     // Calculate the inverse of the camera matrix to get the transformation matrix
@@ -193,22 +190,14 @@ void Realtime::rebuildMatrices() {
     m_camera.setToIdentity();
 
     // Set camera position
-    QVector3D eye(-6.40213e-08, 0.759503, -0.0629183);
+    //QVector3D eye(-6.40213e-08, 0.759503, -0.0629183);
+    QVector3D eye(-6.40213e-08, 26, -0.0629183);
 
     // Set camera direction
     QVector3D direction(8.40059e-08, -0.996586, 0.0825587);
 
     // Calculate the target position by adding the direction to the eye position
     QVector3D target = eye + direction;
-
-    //    std::cout << "Camera Position: "
-    //              << eye.x() << ", "
-    //              << eye.y() << ", "
-    //              << eye.z() << std::endl;
-    //    std::cout << "Camera Direction: "
-    //              << direction.x() << ", "
-    //              << direction.y() << ", "
-    //              << direction.z() << std::endl;
 
     // Set the camera to look at the target
     m_camera.lookAt(eye, target, QVector3D(0, 0, 1));
@@ -223,11 +212,11 @@ void Realtime::timerEvent(QTimerEvent *event) {
     float deltaTime = m_elapsedTimer.elapsed() * 0.001f; // Convert milliseconds to seconds
     m_elapsedTimer.restart();
 
-    float moveSpeed = 1.0f; // Adjust as needed
+    float moveSpeed = 0.1f; // Adjust as needed
     float moveDistance = moveSpeed * deltaTime;
 
     QVector3D forward = -m_camera.column(2).toVector3D().normalized();
-    QVector3D right = QVector3D::crossProduct(QVector3D(0, 0, 1), forward).normalized();
+    //QVector3D right = QVector3D::crossProduct(QVector3D(0, 0, 1), forward).normalized();
 
     // Remove vertical component from the forward vector
     forward.setZ(0);
@@ -241,18 +230,8 @@ void Realtime::timerEvent(QTimerEvent *event) {
 
     QVector3D movement(0.0f, 0.0f, 0.0f);
 
-    if (m_keyMap[Qt::Key_W]) {
-        movement += forward * moveDistance;
-    }
-    if (m_keyMap[Qt::Key_S]) {
-        movement -= forward * moveDistance;
-    }
-    if (m_keyMap[Qt::Key_A]) {
-        movement -= right * moveDistance;
-    }
-    if (m_keyMap[Qt::Key_D]) {
-        movement += right * moveDistance;
-    }
+    //automatic with slider
+    movement += forward * settings.shapeParameter1 * moveDistance ;
 
     QVector3D newPosition = position + movement;
     m_camera.setToIdentity();
@@ -261,37 +240,8 @@ void Realtime::timerEvent(QTimerEvent *event) {
     update();
 }
 
-
 void Realtime::settingsChanged() {
     update(); // asks for a PaintGL() call to occur
 }
-
-
-//// ================== Project 6: Action!
-
-//void Realtime::keyPressEvent(QKeyEvent *event) {
-//    // Set the key state to true since it is being pressed
-//    m_keyMap[Qt::Key(event->key())] = true;
-
-//}
-
-//void Realtime::keyReleaseEvent(QKeyEvent *event) {
-//    m_keyMap[Qt::Key(event->key())] = false;
-//}
-
-//void Realtime::mousePressEvent(QMouseEvent *event) {
-//    if (event->buttons().testFlag(Qt::LeftButton)) {
-//        m_mouseDown = true;
-//        m_prev_mouse_pos = glm::vec2(event->position().x(), event->position().y());
-//    }
-//}
-
-//void Realtime::mouseReleaseEvent(QMouseEvent *event) {
-//    if (!event->buttons().testFlag(Qt::LeftButton)) {
-//        m_mouseDown = false;
-//    }
-//}
-
-
 
 

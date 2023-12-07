@@ -141,5 +141,4 @@ private:
     void timerEvent(QTimerEvent *event) override;
     float m_moveSpeed = 0.1f;
 
-
 };
