@@ -48,6 +48,8 @@ add_executable(${PROJECT_NAME}
     water.frag
     water.vert
     src/simplexnoise.h src/simplexnoise.cpp
+    resources/shaders/skybox.vert
+    resources/shaders/skybox.frag
 
 
 )
@@ -76,8 +78,8 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
     FILES
     resources/shaders/fragment.frag
     resources/shaders/vertex.vert
-    
-
+    resources/shaders/skybox.vert
+    resources/shaders/skybox.frag
 )
 
 # GLEW: this provides support for Windows (including 64-bit)

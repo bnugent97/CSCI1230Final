@@ -25,6 +25,38 @@
 
 // ================== Project 5: Lights, Camera
 
+GLuint loadSkyBoxTextures(const std::vector<std::string>& faces)
+{
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
+
+    int width, height;
+    for(GLuint i = 0; i < faces.size(); i++)
+    {
+        QImage myTexture;
+        if (!myTexture.load(QString::fromStdString(faces[i]))) {
+            std::cout << "Cubemap texture failed to load at path: " << faces[i] << std::endl;
+            continue;
+        }
+        myTexture = myTexture.convertToFormat(QImage::Format_RGBX8888);
+        width = myTexture.width();
+        height = myTexture.height();
+
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+                     0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, myTexture.bits());
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+    return textureID;
+}
+
+
 Realtime::Realtime(QWidget *parent)
     : QOpenGLWidget(parent)
 {
@@ -69,6 +101,8 @@ void Realtime::initializeGL()
     fprintf(stdout, "Successfully initialized GLEW %s\n", glewGetString(GLEW_VERSION));
 
     glClearColor(0, 0, 0, 1);
+
+    // Initialize terrain shader
     m_program = new QOpenGLShaderProgram;
     std::cout << QDir::currentPath().toStdString() << std::endl;
     m_program->addShaderFromSourceFile(QOpenGLShader::Vertex,":/resources/shaders/vertex.vert");
@@ -76,6 +110,14 @@ void Realtime::initializeGL()
     m_program->link();
     m_program->bind();
 
+    // Initialize skybox shader
+    m_skyboxProgram = new QOpenGLShaderProgram;
+    m_skyboxProgram->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/resources/shaders/skybox.vert");
+    m_skyboxProgram->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/resources/shaders/skybox.frag");
+    m_skyboxProgram->link();
+    m_skyboxProgram->bind();
+
+    // Initialize terrain
     m_projMatrixLoc = m_program->uniformLocation("projMatrix");
     m_mvMatrixLoc = m_program->uniformLocation("mvMatrix");
 
@@ -103,29 +145,129 @@ void Realtime::initializeGL()
 
     m_terrainVbo.release();
 
+    // Initialize skybox
+    GLfloat skyboxVertices[] = {
+        // Positions
+        -1.0f,  1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+
+        -1.0f, -1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+
+        -1.0f,  1.0f, -1.0f,
+        1.0f,  1.0f, -1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f, -1.0f,
+
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+        1.0f, -1.0f,  1.0f
+    };
+
+    glGenVertexArrays(1, &m_skyboxVao);
+    glGenBuffers(1, &m_skyboxVbo);
+    glBindVertexArray(m_skyboxVao);
+    glBindBuffer(GL_ARRAY_BUFFER, m_skyboxVbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+    glBindVertexArray(0);
+
+    // Load skybox textures
+    std::vector<std::string> faces{
+        "/Users/brennannugent/CS2230/CSCI1230Final/resources/skyboxTextures/front.png",
+        "/Users/brennannugent/CS2230/CSCI1230Final/resources/skyboxTextures/back.png",
+        "/Users/brennannugent/CS2230/CSCI1230Final/resources/skyboxTextures/left.png",
+        "/Users/brennannugent/CS2230/CSCI1230Final/resources/skyboxTextures/right.png",
+        "/Users/brennannugent/CS2230/CSCI1230Final/resources/skyboxTextures/top.png",
+        "/Users/brennannugent/CS2230/CSCI1230Final/resources/skyboxTextures/bottom.png"
+    };
+    m_skyboxTexture = loadSkyBoxTextures(faces);
+
     m_world.setToIdentity();
     m_world.translate(QVector3D(-0.5,-0.5,0));
-
 
     m_camera.setToIdentity();
     m_camera.lookAt(QVector3D(1,1,1),QVector3D(0,0,0),QVector3D(0,0,1));
 
     m_program->release();
+    m_skyboxProgram->release();
 
-    // dont know if it should be like this
+    // Timer for frame updates
     m_elapsedTimer.start();
     rebuildMatrices();
+    // Disable face culling
+    //    glDisable(GL_CULL_FACE);
+}
+
+void Realtime::renderSkybox() {
+    glDepthFunc(GL_LEQUAL);
+    m_skyboxProgram->bind();
+    QMatrix4x4 view = m_camera.inverted();
+    view.setColumn(3, QVector4D(0, 0, 0, 1)); // Remove translation from the view matrix
+    m_skyboxProgram->setUniformValue("view", view);
+    m_skyboxProgram->setUniformValue("projection", m_proj);
+    glBindVertexArray(m_skyboxVao);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
+    glDepthFunc(GL_LESS);
+    m_skyboxProgram->release();
 }
 
 void Realtime::paintGL()
 {
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
+    // Render Skybox
+    renderSkybox();
+
+    // Restore default depth function for terrain rendering
+    // glDepthFunc(GL_ALWAYS);
+
+    // Bind the terrain shader program
     m_program->bind();
+
+    // Set uniforms for the terrain shader (like view and projection matrices)
+    m_program->setUniformValue(m_projMatrixLoc, m_proj);
+    m_program->setUniformValue(m_mvMatrixLoc, m_camera * m_world);
+
+    // Bind terrain VAO and render terrain
+    m_terrainVao.bind();
     m_program->setUniformValue(m_projMatrixLoc, m_proj);
     m_program->setUniformValue(m_mvMatrixLoc, m_camera * m_world);
     m_program->setUniformValue(m_program->uniformLocation("wireshade"),m_terrain.m_wireshade);
+
 
     int resX = m_terrain.getResolutionX();
     int resY = m_terrain.getResolutionY();
