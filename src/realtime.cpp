@@ -93,6 +93,16 @@ void Realtime::finish() {
 
 void Realtime::initializeGL()
 {
+    // Will this break things?
+    m_devicePixelRatio = this->devicePixelRatio();
+    // FBO Implementation code:
+    m_defaultFBO = 2;
+    m_screen_width = size().width() * m_devicePixelRatio;
+    m_screen_height = size().height() * m_devicePixelRatio;
+    m_fbo_width = m_screen_width;
+    m_fbo_height = m_screen_height;
+
+
     // GLEW is a library which provides an implementation for the OpenGL API
     // Here, we are setting it up
     glewExperimental = GL_TRUE;
@@ -101,6 +111,10 @@ void Realtime::initializeGL()
     fprintf(stdout, "Successfully initialized GLEW %s\n", glewGetString(GLEW_VERSION));
 
     glClearColor(0, 0, 0, 1);
+
+    //Implemented with FBO is this needed?
+
+    glViewport(0, 0, size().width() * m_devicePixelRatio, size().height() * m_devicePixelRatio);
 
     // Initialize terrain shader
     m_program = new QOpenGLShaderProgram;
@@ -117,6 +131,14 @@ void Realtime::initializeGL()
     m_skyboxProgram->link();
     m_skyboxProgram->bind();
 
+
+    m_texture_shader = new QOpenGLShaderProgram;
+    m_texture_shader->addShaderFromSourceFile(QOpenGLShader::Vertex, ":/resources/shaders/texture.vert");
+    m_texture_shader->addShaderFromSourceFile(QOpenGLShader::Fragment, ":/resources/shaders/texture.frag");
+    m_texture_shader->link();
+    m_texture_shader->bind();
+
+
     // Initialize terrain
     m_projMatrixLoc = m_program->uniformLocation("projMatrix");
     m_mvMatrixLoc = m_program->uniformLocation("mvMatrix");
@@ -124,7 +146,7 @@ void Realtime::initializeGL()
     m_terrainVao.create();
     m_terrainVao.bind();
 
-    std::vector<GLfloat> verts = m_terrain.generateTerrain();
+    verts = m_terrain.generateTerrain();
 
     m_terrainVbo.create();
     m_terrainVbo.bind();
@@ -200,50 +222,7 @@ void Realtime::initializeGL()
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
     glBindVertexArray(0);
 
-    // Load skybox textures
-    std::vector<std::string> faces{
-
-
-
-//        ":/resources/skyboxTextures/front.png",
-//        ":/resources/skyboxTextures/back.png",
-//        ":/resources/skyboxTextures/left.png",
-//        ":/resources/skyboxTextures/right.png",
-//        ":/resources/skyboxTextures/top.png",
-//        ":/resources/skyboxTextures/bottom.png"
-
-//        ":/resources/shaders/night.jpeg",
-//        ":/resources/shaders/night.jpeg",
-//        ":/resources/shaders/night.jpeg",
-//        ":/resources/shaders/night.jpeg",
-//        ":/resources/shaders/night.jpeg",
-//        ":/resources/shaders/night.jpeg",
-
-//        ":/resources/shaders/evening.jpeg",
-//        ":/resources/shaders/evening.jpeg",
-//        ":/resources/shaders/evening.jpeg",
-//        ":/resources/shaders/evening.jpeg",
-//        ":/resources/shaders/evening.jpeg",
-//        ":/resources/shaders/evening.jpeg",
-
-
-//        ":/resources/shaders/day.jpeg",
-//        ":/resources/shaders/day.jpeg",
-//        ":/resources/shaders/day.jpeg",
-//        ":/resources/shaders/day.jpeg",
-//        ":/resources/shaders/day.jpeg",
-//        ":/resources/shaders/day.jpeg",
-
-        ":/resources/shaders/rainbowThrowup.png",
-        ":/resources/shaders/rainbowThrowup.png",
-        ":/resources/shaders/rainbowThrowup.png",
-        ":/resources/shaders/rainbowThrowup.png",
-        ":/resources/shaders/rainbowThrowup.png",
-        ":/resources/shaders/rainbowThrowup.png",
-
-
-    };
-    m_skyboxTexture = loadSkyBoxTextures(faces);
+    m_skyboxTexture = loadSkyBoxTextures(dayFaces);
 
     m_world.setToIdentity();
     m_world.translate(QVector3D(-0.5,-0.5,0));
@@ -259,10 +238,142 @@ void Realtime::initializeGL()
     rebuildMatrices();
     // Disable face culling
     //    glDisable(GL_CULL_FACE);
+
+    // FBO Implementation below this:
+
+    // Use the texture shader program to set the uniform
+    //glUseProgram(m_texture_shader);
+
+    // Task 10: Set the texture.frag uniform for our texture
+
+    m_texture_shader->setUniformValue("u_texture", 0);
+
+    // Return to the default state of program 0
+    glUseProgram(0);
+
+    // Task 11: Fix this "fullscreen" quad's vertex data
+    std::vector<GLfloat> fullscreen_quad_data =
+        {
+            // Positions         // Texture Coordinates
+            -1.0f,  1.0f, 0.0f,   0.0f, 1.0f,  // Top Left
+            -1.0f, -1.0f, 0.0f,   0.0f, 0.0f,  // Bottom Left
+            1.0f, -1.0f, 0.0f,   1.0f, 0.0f,  // Bottom Right
+            1.0f, -1.0f, 0.0f,   1.0f, 0.0f,  // Bottom Right
+            1.0f,  1.0f, 0.0f,   1.0f, 1.0f,  // Top Right
+            -1.0f,  1.0f, 0.0f,   0.0f, 1.0f   // Top Left
+        };
+
+    // Task 12: Play around with different values!
+
+    // Generate and bind a VBO and a VAO for a fullscreen quad
+    glGenBuffers(1, &m_fullscreen_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_fullscreen_vbo);
+    glBufferData(GL_ARRAY_BUFFER, fullscreen_quad_data.size()*sizeof(GLfloat), fullscreen_quad_data.data(), GL_STATIC_DRAW);
+    glGenVertexArrays(1, &m_fullscreen_vao);
+    glBindVertexArray(m_fullscreen_vao);
+
+    // Task 14: modify the code below to add a second attribute to the vertex attribute array
+    // Enable the vertex attribute for position
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), reinterpret_cast<void*>(0));
+
+    // Enable the vertex attribute for UV
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), reinterpret_cast<void*>(3 * sizeof(GLfloat)));
+
+    // Unbind the fullscreen quad's VBO and VAO
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
+
+    makeFBO();
+}
+
+void Realtime::makeFBO(){
+    // Task 19: Generate and bind an empty texture, set its min/mag filter interpolation, then unbind
+    glGenTextures(1, &m_fbo_texture);
+    // Bind the texture to texture slot 0
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, m_fbo_texture);
+
+    // Set the texture parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    // Create the empty texture
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_fbo_width, m_fbo_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
+
+    // Unbind the texture
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    // Task 20: Generate and bind a renderbuffer of the right size, set its format, then unbind
+    // Generate the renderbuffer object
+    glGenRenderbuffers(1, &m_fbo_renderbuffer);
+    // Bind the renderbuffer object to the GL_RENDERBUFFER target
+    glBindRenderbuffer(GL_RENDERBUFFER, m_fbo_renderbuffer);
+
+    // Set the storage configuration for the renderbuffer
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_fbo_width, m_fbo_height);
+
+    // Unbind the renderbuffer
+    glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    // Task 18: Generate and bind an FBO
+    // Generate the framebuffer object
+    glGenFramebuffers(1, &m_fbo);
+    // Bind the framebuffer object to the GL_FRAMEBUFFER target
+    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+
+    // Task 21: Add our texture as a color attachment, and our renderbuffer as a depth+stencil attachment, to our FBO
+    // Attach the texture as a color attachment to the FBO
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_fbo_texture, 0);
+
+    // Attach the renderbuffer as a depth and stencil attachment to the FBO
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_fbo_renderbuffer);
+
+    // Check if the FBO is complete
+    if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        qDebug() << "Framebuffer not complete!";
+    }
+
+    // Unbind the FBO until we need to use it again
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // Task 22: Unbind the FBO
+    // glBindFramebuffer(GL_FRAMEBUFFER, m_defaultFBO);
+
 }
 
 void Realtime::renderSkybox() {
     glDepthFunc(GL_LEQUAL);
+
+    if (settings.extraCredit1 && settings.extraCredit1 != setting1) {
+        m_skyboxTexture = loadSkyBoxTextures(dayFaces);
+        //verts = m_terrain.generateTerrain();
+
+        setting1 = settings.extraCredit1;
+        setting2 = settings.extraCredit2;
+        setting3 = settings.extraCredit3;
+    }
+
+    if (settings.extraCredit2 && settings.extraCredit2 != setting2) {
+        m_skyboxTexture = loadSkyBoxTextures(nightFaces);
+        //verts = m_terrain.generateTerrain();
+
+        setting1 = settings.extraCredit1;
+        setting2 = settings.extraCredit2;
+        setting3 = settings.extraCredit3;
+    }
+
+    if (settings.extraCredit3 && settings.extraCredit3 != setting3) {
+        m_skyboxTexture = loadSkyBoxTextures(rainbowFaces);
+        //verts = m_terrain.generateTerrain();
+
+        setting1 = settings.extraCredit1;
+        setting2 = settings.extraCredit2;
+        setting3 = settings.extraCredit3;
+    }
+
     m_skyboxProgram->bind();
     QMatrix4x4 view = m_camera.inverted();
     view.setColumn(3, QVector4D(0, 0, 0, 1)); // Remove translation from the view matrix
@@ -279,6 +390,17 @@ void Realtime::renderSkybox() {
 
 void Realtime::paintGL()
 {
+
+
+    // Task 23: Uncomment the following code
+    //    // Task 24: Bind our FBO
+    glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
+
+    //    // Task 28: Call glViewport
+    // Maybe need to reposition
+    glViewport(0, 0, m_screen_width, m_screen_height);
+
+    // FBO INIT ABOVE, everything else below
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
@@ -311,6 +433,52 @@ void Realtime::paintGL()
     glDrawArrays(GL_TRIANGLES, 0, resX * resY * 6);
 
     m_program->release();
+
+    // FBO Reimplementation
+
+    //    // Task 25: Bind the default framebuffer
+    glBindFramebuffer(GL_FRAMEBUFFER, m_defaultFBO);
+
+
+
+
+    //    // Task 26: Clear the color and depth buffers
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    //    // Task 27: Call paintTexture to draw our FBO color attachment texture | Task 31: Set bool parameter to true
+    paintTexture(m_fbo_texture,  settings.extraCredit1, settings.extraCredit2, settings.extraCredit3);
+
+
+}
+
+// Task 31: Update the paintTexture function signature
+void Realtime::paintTexture(GLuint texture, bool postProcess1, bool postProcess2, bool postProcess3) {
+    m_texture_shader->bind();
+
+    // Task 32: Set your bool uniform on whether or not to filter the texture drawn
+    m_texture_shader->setUniformValue("daytime", postProcess1 ? 1 : 0);
+
+    // Task 32: Set your bool uniform on whether or not to filter the texture drawn
+    m_texture_shader->setUniformValue("nighttime", postProcess2 ? 1 : 0);
+
+
+    // Extra Credit implementation
+    // Task 32: Set your bool uniform on whether or not to filter the texture drawn
+    m_texture_shader->setUniformValue("rainbowvomit", postProcess3 ? 1 : 0);
+
+    glBindVertexArray(m_fullscreen_vao);
+    // Task 10: Bind "texture" to slot 0
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture);
+
+    // Now you can call glDrawArrays or any other drawing function
+    //glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindVertexArray(0);
+    glUseProgram(0);
 }
 
 void Realtime::resizeGL(int w, int h)
@@ -366,8 +534,8 @@ void Realtime::rebuildMatrices() {
     m_camera.setToIdentity();
 
     // Set camera position
-    //QVector3D eye(-6.40213e-08, 0.759503, -0.0629183);
-    QVector3D eye(-6.40213e-08, 26, -0.0629183);
+    QVector3D eye(-6.40213e-08, 0.759503, -0.0629183);
+    //QVector3D eye(-6.40213e-08, 26, -0.0629183);
 
     // Set camera direction
     QVector3D direction(8.40059e-08, -0.996586, 0.0825587);

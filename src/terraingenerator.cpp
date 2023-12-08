@@ -7,6 +7,8 @@
 #include <algorithm> // For std::min
 #include <limits>    // For std::numeric_limits
 
+#include "settings.h"
+
 // Constructor
 TerrainGenerator::TerrainGenerator()
 {
@@ -14,8 +16,8 @@ TerrainGenerator::TerrainGenerator()
     //Define resolution of terrain generation
     m_resolutionX = 250;
     m_resolutionY = 5000;
-    //    m_resolutionX = 100;
-    //    m_resolutionY = 500;
+//    m_resolutionX = 100;
+//    m_resolutionY = 500;
     // Generate random vector lookup table
     m_lookupSize = 1024;
     m_randVecLookup.reserve(m_lookupSize);
@@ -107,6 +109,8 @@ glm::vec3 TerrainGenerator::getPosition(int row, int col) {
     float scale_y = 50.0; // Adjust this scale for the y-axis
     //    float scale_x = 1.0; // Adjust this scale for the x-axis
     //    float scale_y = 5.0; // Adjust this scale for the y-axis
+
+
     // Adjust the normalization to scale around the center
     float halfResX = m_resolutionX / 2.0f;
     float halfResY = m_resolutionY / 2.0f;
@@ -140,10 +144,19 @@ float TerrainGenerator::getHeight(float x, float y) {
     }
     // Calculate a smoothstep factor based on the distance from the center of the valley
     float smoothFactor = glm::smoothstep(0.0f, centralWidth / 0.25f, abs(x - 0.5f));
-    // Task 7: combine multiple different octaves of noise to produce fractal perlin noise
+
+
+
+    //    float totalHeight = 0.0f;
+    //    float amplitude = 0.50f;
+    //    float frequency = 0.75f;
+
     float totalHeight = 0.25f;
     float amplitude = 0.30f;
     float frequency = 1.f;
+
+
+
     for (int octave = 0; octave < 4; ++octave) {
         totalHeight += amplitude * noise.signedRawNoise( x * frequency, y * frequency );
         //totalHeight += amplitude * computePerlin( x * frequency, y * frequency );
@@ -190,6 +203,7 @@ glm::vec3 TerrainGenerator::getColor(glm::vec3 normal, glm::vec3 position) {
     float road = -0.1f;
     // Use the z component of position to determine the height
     float height = position.z;
+
     if (height > snowHeight) {
         return glm::vec3(1, 1, 1); // Snow (white)
     } else if (height > dirtHeight) {
@@ -199,6 +213,96 @@ glm::vec3 TerrainGenerator::getColor(glm::vec3 normal, glm::vec3 position) {
     } else {
         return glm::vec3(0.2, 0.5, 0.2); // Grass (green)
     }
+
+
+//    if (settings.extraCredit1) {
+
+//        if (height > snowHeight) {
+//            return glm::vec3(.54, .6, .72); // Snow (white)
+//        } else if (height > dirtHeight) {
+//            return glm::vec3(0.27, 0.188, 0.11); // Dirt (brown)
+//        } else if (height >= road && height < -0.099999994f ) {
+//            return glm::vec3(0.22,0.22,0.22); // road
+//        } else {
+//            return glm::vec3(0.13, 0.30, 0.09); // Grass (green)
+//        }
+
+//    }
+
+//    else if (settings.extraCredit2) {
+
+//        if (height > snowHeight) {
+//            return glm::vec3(.54, .6, .72); // Snow (white)
+//        } else if (height > dirtHeight) {
+//            return glm::vec3(0.27, 0.188, 0.11); // Dirt (brown)
+//        } else if (height >= road && height < -0.099999994f ) {
+//            return glm::vec3(0.22,0.22,0.22); // road
+//        } else {
+//            return glm::vec3(0.13, 0.30, 0.09); // Grass (green)
+//        }
+
+
+//    }
+
+
+
+//    else if (settings.extraCredit3) {
+
+//        if (height > snowHeight) {
+//            return glm::vec3(.54, .6, .72); // Snow (white)
+//        } else if (height > dirtHeight) {
+//            return glm::vec3(0.27, 0.188, 0.11); // Dirt (brown)
+//        } else if (height >= road && height < -0.099999994f ) {
+//            return glm::vec3(0.22,0.22,0.22); // road
+//        } else {
+//            return glm::vec3(0.13, 0.30, 0.09); // Grass (green)
+//        }
+
+//    }
+
+//    if (settings.extraCredit1) {
+
+//        if (height > snowHeight) {
+//            return glm::vec3(1, 1, 1); // Snow (white)
+//        } else if (height > dirtHeight) {
+//            return glm::vec3(0.7, 0.48, 0.32); // Dirt (brown)
+//        } else if (height >= road && height < -0.099999994f ) {
+//            return glm::vec3(0.38,0.38,0.38); // road
+//        } else {
+//            return glm::vec3(0.2, 0.5, 0.2); // Grass (green)
+//        }
+
+//    }
+
+//    else if (settings.extraCredit2) {
+
+//        if (height > snowHeight) {
+//            return glm::vec3(.54, .6, .72); // Snow (white)
+//        } else if (height > dirtHeight) {
+//            return glm::vec3(0.27, 0.188, 0.11); // Dirt (brown)
+//        } else if (height >= road && height < -0.099999994f ) {
+//            return glm::vec3(0.22,0.22,0.22); // road
+//        } else {
+//            return glm::vec3(0.13, 0.30, 0.09); // Grass (green)
+//        }
+
+//    }
+
+//    else if (settings.extraCredit3) {
+
+//        if (height > snowHeight) {
+//            return glm::vec3(.54, .6, .72); // Snow (white)
+//        } else if (height > dirtHeight) {
+//            return glm::vec3(0.27, 0.188, 0.11); // Dirt (brown)
+//        } else if (height >= road && height < -0.099999994f ) {
+//            return glm::vec3(0.22,0.22,0.22); // road
+//        } else {
+//            return glm::vec3(0.13, 0.30, 0.09); // Grass (green)
+//        }
+
+//    }
+
+
 }
 
 // Computes the intensity of Perlin noise at some point

@@ -54,6 +54,8 @@ add_executable(${PROJECT_NAME}
     resources/shaders/evening.jpeg
     resources/shaders/day.jpeg
     resources/shaders/rainbowThrowup.png
+    resources/shaders/texture.frag
+    resources/shaders/texture.vert
 
 
 
@@ -91,6 +93,9 @@ qt6_add_resources(${PROJECT_NAME} "Resources"
     resources/shaders/evening.jpeg
     resources/shaders/day.jpeg
     resources/shaders/rainbowThrowup.png
+
+    resources/shaders/texture.frag
+    resources/shaders/texture.vert
 
 
 )

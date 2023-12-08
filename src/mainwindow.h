@@ -9,6 +9,10 @@
 #include "realtime.h"
 #include "utils/aspectratiowidget/aspectratiowidget.hpp"
 
+// Include QRadioButton and QButtonGroup
+#include <QRadioButton>
+#include <QButtonGroup>
+
 class MainWindow : public QWidget
 {
     Q_OBJECT
@@ -39,10 +43,10 @@ private:
 
 
     // Extra Credit:
-    QCheckBox *ec1;
-    QCheckBox *ec2;
-    QCheckBox *ec3;
-    QCheckBox *ec4;
+    QRadioButton *ec1;
+    QRadioButton *ec2;
+    QRadioButton *ec3;
+    QButtonGroup *ecGroup;
 
 private slots:
     void onPerPixelFilter();
@@ -54,5 +58,5 @@ private slots:
     void onExtraCredit1();
     void onExtraCredit2();
     void onExtraCredit3();
-    void onExtraCredit4();
+
 };

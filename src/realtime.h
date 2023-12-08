@@ -24,6 +24,8 @@
 #include <QOpenGLShaderProgram>
 
 
+
+
 class Realtime : public QOpenGLWidget
 {
 public:
@@ -34,6 +36,8 @@ public:
     void saveViewportImage(std::string filePath);
 
     void generateShapes();
+    void makeFBO();
+    void paintTexture(GLuint texture, bool postProcess1, bool postProcess2, bool postProcess3);
 
 public slots:
     void tick(QTimerEvent* event);                      // Called once per tick of m_timer
@@ -106,7 +110,7 @@ private:
     int m_screen_width;
     int m_screen_height;
 
-    GLuint m_texture_shader;
+    QOpenGLShaderProgram *m_texture_shader = nullptr;
     GLuint m_fullscreen_vbo;
     GLuint m_fullscreen_vao;
     QImage m_image;
@@ -145,5 +149,50 @@ private:
     QOpenGLShaderProgram *m_skyboxProgram = nullptr;
     GLuint m_skyboxVao, m_skyboxVbo;
     GLuint m_skyboxTexture;
+
+    // Load skybox textures
+    std::vector<std::string> dayFaces{
+
+
+        ":/resources/shaders/day.jpeg",
+        ":/resources/shaders/day.jpeg",
+        ":/resources/shaders/day.jpeg",
+        ":/resources/shaders/day.jpeg",
+        ":/resources/shaders/day.jpeg",
+        ":/resources/shaders/day.jpeg",
+
+    };
+
+    std::vector<std::string> nightFaces{
+
+        ":/resources/shaders/night.jpeg",
+        ":/resources/shaders/night.jpeg",
+        ":/resources/shaders/night.jpeg",
+        ":/resources/shaders/night.jpeg",
+        ":/resources/shaders/night.jpeg",
+        ":/resources/shaders/night.jpeg",
+
+    };
+
+    std::vector<std::string> rainbowFaces{
+
+        ":/resources/shaders/rainbowThrowup.png",
+        ":/resources/shaders/rainbowThrowup.png",
+        ":/resources/shaders/rainbowThrowup.png",
+        ":/resources/shaders/rainbowThrowup.png",
+        ":/resources/shaders/rainbowThrowup.png",
+        ":/resources/shaders/rainbowThrowup.png",
+    };
+
+    bool setting1 = true;
+    bool setting2 = false;
+    bool setting3 = false;
+
+    std::vector<GLfloat> verts;
+
+
+
+
+
 
 };

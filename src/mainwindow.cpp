@@ -8,6 +8,9 @@
 #include <QLabel>
 #include <QGroupBox>
 #include <iostream>
+// Include QRadioButton and QButtonGroup
+#include <QRadioButton>
+#include <QButtonGroup>
 
 void MainWindow::initialize() {
     realtime = new Realtime;
@@ -96,21 +99,22 @@ void MainWindow::initialize() {
 
 
     // Extra Credit:
-    ec1 = new QCheckBox();
-    ec1->setText(QStringLiteral("Extra Credit 1"));
-    ec1->setChecked(false);
+    // Extra Credit: Use radio buttons instead of checkboxes
+    ec1 = new QRadioButton(this);
+    ec1->setText(QStringLiteral("Daytime"));
+    ec2 = new QRadioButton(this);
+    ec2->setText(QStringLiteral("Nighttime"));
+    ec3 = new QRadioButton(this);
+    ec3->setText(QStringLiteral("Rainbow Vomit"));
 
-    ec2 = new QCheckBox();
-    ec2->setText(QStringLiteral("Extra Credit 2"));
-    ec2->setChecked(false);
+    // Set the first radio button as checked by default
+    ec1->setChecked(true);
 
-    ec3 = new QCheckBox();
-    ec3->setText(QStringLiteral("Extra Credit 3"));
-    ec3->setChecked(false);
-
-    ec4 = new QCheckBox();
-    ec4->setText(QStringLiteral("Extra Credit 4"));
-    ec4->setChecked(false);
+    // Create a button group for extra credit radio buttons
+    ecGroup = new QButtonGroup(this);
+    ecGroup->addButton(ec1);
+    ecGroup->addButton(ec2);
+    ecGroup->addButton(ec3);
 
 
     vLayout->addWidget(tesselation_label);
@@ -127,13 +131,13 @@ void MainWindow::initialize() {
     vLayout->addWidget(ec1);
     vLayout->addWidget(ec2);
     vLayout->addWidget(ec3);
-    vLayout->addWidget(ec4);
 
     connectUIElements();
 
     // Set default values of 5 for tesselation parameters
     onValChangeP1(5);
     onValChangeP2(5);
+
 
 }
 
@@ -175,10 +179,10 @@ void MainWindow::connectParam2() {
 
 
 void MainWindow::connectExtraCredit() {
-    connect(ec1, &QCheckBox::clicked, this, &MainWindow::onExtraCredit1);
-    connect(ec2, &QCheckBox::clicked, this, &MainWindow::onExtraCredit2);
-    connect(ec3, &QCheckBox::clicked, this, &MainWindow::onExtraCredit3);
-    connect(ec4, &QCheckBox::clicked, this, &MainWindow::onExtraCredit4);
+    // Connect each radio button to its respective slot
+    connect(ec1, &QRadioButton::clicked, this, &MainWindow::onExtraCredit1);
+    connect(ec2, &QRadioButton::clicked, this, &MainWindow::onExtraCredit2);
+    connect(ec3, &QRadioButton::clicked, this, &MainWindow::onExtraCredit3);
 }
 
 void MainWindow::onPerPixelFilter() {
@@ -212,21 +216,22 @@ void MainWindow::onValChangeP2(int newValue) {
 // Extra Credit:
 
 void MainWindow::onExtraCredit1() {
-    settings.extraCredit1 = !settings.extraCredit1;
+    settings.extraCredit1 = true;
+    settings.extraCredit2 = false;
+    settings.extraCredit3 = false;
     realtime->settingsChanged();
 }
 
 void MainWindow::onExtraCredit2() {
-    settings.extraCredit2 = !settings.extraCredit2;
+    settings.extraCredit1 = false;
+    settings.extraCredit2 = true;
+    settings.extraCredit3 = false;
     realtime->settingsChanged();
 }
 
 void MainWindow::onExtraCredit3() {
-    settings.extraCredit3 = !settings.extraCredit3;
-    realtime->settingsChanged();
-}
-
-void MainWindow::onExtraCredit4() {
-    settings.extraCredit4 = !settings.extraCredit4;
+    settings.extraCredit1 = false;
+    settings.extraCredit2 = false;
+    settings.extraCredit3 = true;
     realtime->settingsChanged();
 }
