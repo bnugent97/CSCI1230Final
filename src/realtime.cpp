@@ -83,8 +83,37 @@ void Realtime::finish() {
     // Students: anything requiring OpenGL calls when the program exits should be done here
 
     // Delete buffers and vertex arrays
+    // Delete shader programs
+    if (m_program) {
+        delete m_program;
+        m_program = nullptr;
+    }
+    if (m_skyboxProgram) {
+        delete m_skyboxProgram;
+        m_skyboxProgram = nullptr;
+    }
+    if (m_texture_shader) {
+        delete m_texture_shader;
+        m_texture_shader = nullptr;
+    }
 
+    // Delete vertex arrays and buffers
+    m_terrainVao.destroy();
+    m_terrainVbo.destroy();
 
+    glDeleteVertexArrays(1, &m_skyboxVao);
+    glDeleteBuffers(1, &m_skyboxVbo);
+
+    glDeleteVertexArrays(1, &m_fullscreen_vao);
+    glDeleteBuffers(1, &m_fullscreen_vbo);
+
+    // Delete textures
+    glDeleteTextures(1, &m_skyboxTexture);
+    glDeleteTextures(1, &m_fbo_texture);
+
+    // Delete framebuffer and renderbuffer
+    glDeleteFramebuffers(1, &m_fbo);
+    glDeleteRenderbuffers(1, &m_fbo_renderbuffer);
 
     // NEED TO CLEAN OUT FBO HERE
 
@@ -483,6 +512,13 @@ void Realtime::paintTexture(GLuint texture, bool postProcess1, bool postProcess2
 
 void Realtime::resizeGL(int w, int h)
 {
+    m_screen_width = size().width() * m_devicePixelRatio;
+    m_screen_height = size().height() * m_devicePixelRatio;
+    m_fbo_width = m_screen_width;
+    m_fbo_height = m_screen_height;
+    // Task 34: Regenerate your FBOs
+    makeFBO();
+
     m_proj.setToIdentity();
     m_proj.perspective(45.0f, GLfloat(w) / h, 0.01f, 100.0f);
 }
