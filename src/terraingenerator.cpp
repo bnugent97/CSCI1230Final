@@ -13,18 +13,20 @@
 TerrainGenerator::TerrainGenerator()
 {
     m_wireshade = false; // TA SOLUTION
+
     //Define resolution of terrain generation
     m_resolutionX = 250;
     m_resolutionY = 5000;
 //    m_resolutionX = 100;
 //    m_resolutionY = 500;
+
     // Generate random vector lookup table
     m_lookupSize = 1024;
     m_randVecLookup.reserve(m_lookupSize);
+
     // Initialize random number generator
-    //  float rand = glm::linearRand(0.f,1.f);
-    //  std::srand(int(rand*2000));
     std::srand(1230);
+
     // Populate random vector lookup table
     for (int i = 0; i < m_lookupSize; i++)
     {
@@ -133,9 +135,11 @@ float TerrainGenerator::getHeight(float x, float y) {
     float xOffset = 0.0f; // No horizontal offset
     float yOffset = 0.0f; // No vertical offset
     SimplexNoise noise;
+
     // Apply offsets to x and y
     x += xOffset;
     y += yOffset;
+
     // Set a central region (the "valley") where the terrain is flat
     float centralWidth = 0.1f; // Adjust this value to control the width of the valley
     float centralHeight = -0.1f; // Adjust this value to control the depth of the valley
@@ -145,17 +149,12 @@ float TerrainGenerator::getHeight(float x, float y) {
     // Calculate a smoothstep factor based on the distance from the center of the valley
     float smoothFactor = glm::smoothstep(0.0f, centralWidth / 0.25f, abs(x - 0.5f));
 
-
-
     //    float totalHeight = 0.0f;
     //    float amplitude = 0.50f;
     //    float frequency = 0.75f;
-
     float totalHeight = 0.25f;
     float amplitude = 0.30f;
     float frequency = 1.f;
-
-
 
     for (int octave = 0; octave < 4; ++octave) {
         totalHeight += amplitude * noise.signedRawNoise( x * frequency, y * frequency );
@@ -213,96 +212,6 @@ glm::vec3 TerrainGenerator::getColor(glm::vec3 normal, glm::vec3 position) {
     } else {
         return glm::vec3(0.2, 0.5, 0.2); // Grass (green)
     }
-
-
-//    if (settings.extraCredit1) {
-
-//        if (height > snowHeight) {
-//            return glm::vec3(.54, .6, .72); // Snow (white)
-//        } else if (height > dirtHeight) {
-//            return glm::vec3(0.27, 0.188, 0.11); // Dirt (brown)
-//        } else if (height >= road && height < -0.099999994f ) {
-//            return glm::vec3(0.22,0.22,0.22); // road
-//        } else {
-//            return glm::vec3(0.13, 0.30, 0.09); // Grass (green)
-//        }
-
-//    }
-
-//    else if (settings.extraCredit2) {
-
-//        if (height > snowHeight) {
-//            return glm::vec3(.54, .6, .72); // Snow (white)
-//        } else if (height > dirtHeight) {
-//            return glm::vec3(0.27, 0.188, 0.11); // Dirt (brown)
-//        } else if (height >= road && height < -0.099999994f ) {
-//            return glm::vec3(0.22,0.22,0.22); // road
-//        } else {
-//            return glm::vec3(0.13, 0.30, 0.09); // Grass (green)
-//        }
-
-
-//    }
-
-
-
-//    else if (settings.extraCredit3) {
-
-//        if (height > snowHeight) {
-//            return glm::vec3(.54, .6, .72); // Snow (white)
-//        } else if (height > dirtHeight) {
-//            return glm::vec3(0.27, 0.188, 0.11); // Dirt (brown)
-//        } else if (height >= road && height < -0.099999994f ) {
-//            return glm::vec3(0.22,0.22,0.22); // road
-//        } else {
-//            return glm::vec3(0.13, 0.30, 0.09); // Grass (green)
-//        }
-
-//    }
-
-//    if (settings.extraCredit1) {
-
-//        if (height > snowHeight) {
-//            return glm::vec3(1, 1, 1); // Snow (white)
-//        } else if (height > dirtHeight) {
-//            return glm::vec3(0.7, 0.48, 0.32); // Dirt (brown)
-//        } else if (height >= road && height < -0.099999994f ) {
-//            return glm::vec3(0.38,0.38,0.38); // road
-//        } else {
-//            return glm::vec3(0.2, 0.5, 0.2); // Grass (green)
-//        }
-
-//    }
-
-//    else if (settings.extraCredit2) {
-
-//        if (height > snowHeight) {
-//            return glm::vec3(.54, .6, .72); // Snow (white)
-//        } else if (height > dirtHeight) {
-//            return glm::vec3(0.27, 0.188, 0.11); // Dirt (brown)
-//        } else if (height >= road && height < -0.099999994f ) {
-//            return glm::vec3(0.22,0.22,0.22); // road
-//        } else {
-//            return glm::vec3(0.13, 0.30, 0.09); // Grass (green)
-//        }
-
-//    }
-
-//    else if (settings.extraCredit3) {
-
-//        if (height > snowHeight) {
-//            return glm::vec3(.54, .6, .72); // Snow (white)
-//        } else if (height > dirtHeight) {
-//            return glm::vec3(0.27, 0.188, 0.11); // Dirt (brown)
-//        } else if (height >= road && height < -0.099999994f ) {
-//            return glm::vec3(0.22,0.22,0.22); // road
-//        } else {
-//            return glm::vec3(0.13, 0.30, 0.09); // Grass (green)
-//        }
-
-//    }
-
-
 }
 
 // Computes the intensity of Perlin noise at some point
@@ -329,3 +238,4 @@ float TerrainGenerator::computePerlin(float x, float y) {
     // Task 5: Debug this line to properly use your interpolation function to produce the correct value
     return interpolate(interpolate(A, B, offsetTLx), interpolate(D, C, offsetTLx), offsetTLy);
 }
+
