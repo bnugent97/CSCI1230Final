@@ -78,15 +78,15 @@ void MainWindow::initialize() {
 
     p2Slider = new QSlider(Qt::Orientation::Horizontal); // Parameter 2 slider
     p2Slider->setTickInterval(1);
-    p2Slider->setMinimum(1);
-    p2Slider->setMaximum(25);
-    p2Slider->setValue(1);
+    p2Slider->setMinimum(45);
+    p2Slider->setMaximum(100);
+    p2Slider->setValue(45);
 
     p2Box = new QSpinBox();
-    p2Box->setMinimum(1);
-    p2Box->setMaximum(25);
+    p2Box->setMinimum(45);
+    p2Box->setMaximum(100);
     p2Box->setSingleStep(1);
-    p2Box->setValue(1);
+    p2Box->setValue(45);
 
     // Adds the slider and number box to the parameter layouts
     l1->addWidget(p1Slider);

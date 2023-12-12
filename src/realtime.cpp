@@ -74,6 +74,7 @@ Realtime::Realtime(QWidget *parent)
     // If you must use this function, do not edit anything above this
     m_elapsedTimer.start();
     startTimer(16); // Approximately 60 frames per second
+    m_farPlane = 100.0f; // Example value, adjust as needed
 }
 
 void Realtime::finish() {
@@ -452,6 +453,7 @@ void Realtime::paintGL()
     m_program->setUniformValue(m_projMatrixLoc, m_proj);
     m_program->setUniformValue(m_mvMatrixLoc, m_camera * m_world);
     m_program->setUniformValue(m_program->uniformLocation("wireshade"),m_terrain.m_wireshade);
+    m_program->setUniformValue("farPlane", m_farPlane);
 
 
     int resX = m_terrain.getResolutionX();
@@ -520,7 +522,7 @@ void Realtime::resizeGL(int w, int h)
     makeFBO();
 
     m_proj.setToIdentity();
-    m_proj.perspective(45.0f, GLfloat(w) / h, 0.01f, 100.0f);
+    m_proj.perspective(45.0f, 1.0 * width() / height(), 0.01f, m_farPlane);
 }
 
 void Realtime::mousePressEvent(QMouseEvent *event) {
@@ -583,7 +585,7 @@ void Realtime::rebuildMatrices() {
     m_camera.lookAt(eye, target, QVector3D(0, 0, 1));
 
     m_proj.setToIdentity();
-    m_proj.perspective(45.0f, 1.0 * width() / height(), 0.01f, 100.0f);
+    m_proj.perspective(45.0f, 1.0 * width() / height(), 0.01f, m_farPlane);
 
     update();
 }

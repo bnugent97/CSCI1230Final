@@ -190,6 +190,8 @@ private:
 
     std::vector<GLfloat> verts;
 
+     float m_farPlane; // Far plane distance
+
 
 
 
