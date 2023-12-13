@@ -28,34 +28,22 @@ void MainWindow::initialize() {
     font.setPointSize(12);
     font.setBold(true);
     QLabel *tesselation_label = new QLabel(); // Parameters label
-    tesselation_label->setText("Environment Controls");
+    tesselation_label->setText("Camera Controls");
     tesselation_label->setFont(font);
     QLabel *camera_label = new QLabel(); // Camera label
-    camera_label->setText("Camera");
+    camera_label->setText("Environmental Controls");
     camera_label->setFont(font);
     QLabel *filters_label = new QLabel(); // Filters label
-    filters_label->setText("Filters");
+    filters_label->setText("Fog Controls");
     filters_label->setFont(font);
     QLabel *ec_label = new QLabel(); // Extra Credit label
-    ec_label->setText("Extra Credit");
+    ec_label->setText("Scene Theme");
     ec_label->setFont(font);
     QLabel *param1_label = new QLabel(); // Parameter 1 label
     param1_label->setText("Movement speed:");
     QLabel *param2_label = new QLabel(); // Parameter 2 label
     param2_label->setText("Fog Distance:");
 
-
-
-
-    // Create checkbox for per-pixel filter
-    filter1 = new QCheckBox();
-    filter1->setText(QStringLiteral("Per-Pixel Filter"));
-    filter1->setChecked(false);
-
-    // Create checkbox for kernel-based filter
-    filter2 = new QCheckBox();
-    filter2->setText(QStringLiteral("Kernel-Based Filter"));
-    filter2->setChecked(false);
 
     // Creates the boxes containing the parameter sliders and number boxes
     QGroupBox *p1Layout = new QGroupBox(); // horizonal slider 1 alignment
@@ -120,12 +108,13 @@ void MainWindow::initialize() {
     vLayout->addWidget(tesselation_label);
     vLayout->addWidget(param1_label);
     vLayout->addWidget(p1Layout);
+
+
+    vLayout->addWidget(camera_label);
     vLayout->addWidget(param2_label);
     vLayout->addWidget(p2Layout);
-    vLayout->addWidget(camera_label);
-    vLayout->addWidget(filters_label);
-    vLayout->addWidget(filter1);
-    vLayout->addWidget(filter2);
+
+
     // Extra Credit:
     vLayout->addWidget(ec_label);
     vLayout->addWidget(ec1);
@@ -147,8 +136,6 @@ void MainWindow::finish() {
 }
 
 void MainWindow::connectUIElements() {
-    connectPerPixelFilter();
-    connectKernelBasedFilter();
     connectParam1();
     connectParam2();
     connectExtraCredit();

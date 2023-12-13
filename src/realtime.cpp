@@ -401,6 +401,8 @@ void Realtime::renderSkybox() {
     view.setColumn(3, QVector4D(0, 0, 0, 1)); // Remove translation from the view matrix
     m_skyboxProgram->setUniformValue("view", view);
     m_skyboxProgram->setUniformValue("projection", m_proj);
+    m_skyboxProgram->setUniformValue("shapeParameter2", GLfloat(settings.shapeParameter2));
+    m_skyboxProgram->setUniformValue("rainbowVomit", settings.extraCredit3);
     glBindVertexArray(m_skyboxVao);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_skyboxTexture);
@@ -447,6 +449,7 @@ void Realtime::paintGL()
     m_program->setUniformValue(m_mvMatrixLoc, m_camera * m_world);
     m_program->setUniformValue(m_program->uniformLocation("wireshade"),m_terrain.m_wireshade);
     m_program->setUniformValue("farPlane", m_farPlane);
+    m_program->setUniformValue("rainbowVomit", settings.extraCredit3);
 
     int resX = m_terrain.getResolutionX();
     int resY = m_terrain.getResolutionY();
