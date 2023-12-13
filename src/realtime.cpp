@@ -23,8 +23,6 @@
 
 
 
-// ================== Project 5: Lights, Camera
-
 GLuint loadSkyBoxTextures(const std::vector<std::string>& faces)
 {
     GLuint textureID;
@@ -277,6 +275,8 @@ void Realtime::initializeGL()
     // Task 10: Set the texture.frag uniform for our texture
 
     m_texture_shader->setUniformValue("u_texture", 0);
+    viewportSizeLocation = m_program->uniformLocation("viewportSize");
+
 
     // Return to the default state of program 0
     glUseProgram(0);
@@ -448,8 +448,19 @@ void Realtime::paintGL()
     m_program->setUniformValue(m_projMatrixLoc, m_proj);
     m_program->setUniformValue(m_mvMatrixLoc, m_camera * m_world);
 
+
+    GLfloat fogSize = GLfloat(float(settings.shapeParameter2)/100.f);
+    //std::cout << fogSize << std::endl;
+    //m_program->setUniformValue(viewportSizeLocation,fogSize, fogSize);
+
+
+    m_program->setUniformValue(viewportSizeLocation, GLfloat(m_screen_width), GLfloat(m_screen_height));
+
+
     // Bind terrain VAO and render terrain
     m_terrainVao.bind();
+    m_program->setUniformValue("fogSize", fogSize);
+
     m_program->setUniformValue(m_projMatrixLoc, m_proj);
     m_program->setUniformValue(m_mvMatrixLoc, m_camera * m_world);
     m_program->setUniformValue(m_program->uniformLocation("wireshade"),m_terrain.m_wireshade);
@@ -482,7 +493,6 @@ void Realtime::paintGL()
 
 }
 
-// Task 31: Update the paintTexture function signature
 void Realtime::paintTexture(GLuint texture, bool postProcess1, bool postProcess2, bool postProcess3) {
     m_texture_shader->bind();
 

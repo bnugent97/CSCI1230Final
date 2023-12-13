@@ -189,9 +189,8 @@ private:
     bool setting3 = false;
 
     std::vector<GLfloat> verts;
-
-     float m_farPlane; // Far plane distance
-
+    float m_farPlane; // Far plane distance
+    GLint viewportSizeLocation;
 
 
 

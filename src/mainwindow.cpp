@@ -42,7 +42,7 @@ void MainWindow::initialize() {
     QLabel *param1_label = new QLabel(); // Parameter 1 label
     param1_label->setText("Movement speed:");
     QLabel *param2_label = new QLabel(); // Parameter 2 label
-    param2_label->setText("Parameter 2:");
+    param2_label->setText("Fog Distance:");
 
 
 
@@ -78,15 +78,15 @@ void MainWindow::initialize() {
 
     p2Slider = new QSlider(Qt::Orientation::Horizontal); // Parameter 2 slider
     p2Slider->setTickInterval(1);
-    p2Slider->setMinimum(45);
+    p2Slider->setMinimum(0);
     p2Slider->setMaximum(100);
-    p2Slider->setValue(45);
+    p2Slider->setValue(50);
 
     p2Box = new QSpinBox();
-    p2Box->setMinimum(45);
+    p2Box->setMinimum(0);
     p2Box->setMaximum(100);
     p2Box->setSingleStep(1);
-    p2Box->setValue(45);
+    p2Box->setValue(50);
 
     // Adds the slider and number box to the parameter layouts
     l1->addWidget(p1Slider);
@@ -136,7 +136,7 @@ void MainWindow::initialize() {
 
     // Set default values of 5 for tesselation parameters
     onValChangeP1(5);
-    onValChangeP2(5);
+    onValChangeP2(50);
 
 
 }
