@@ -153,7 +153,10 @@ void main(void)
     float fogEnd = 4.0 * fogScale; // End of the fog effect, adjust as needed
 
     // Calculate fog factor (0 = no fog, 1 = full fog)
-    float fogFactor = smoothstep(fogStart, fogEnd, normalizedDepth);
+    float fogFactor = smoothstep(fogStart, fogEnd, normalizedDepth) * 0;
+    if (fogSize > 0){
+        fogFactor = smoothstep(fogStart, fogEnd, normalizedDepth) * .95;
+    }
 
     // Apply edge smoothness to fog factor
     fogFactor *= edgeFactor;
