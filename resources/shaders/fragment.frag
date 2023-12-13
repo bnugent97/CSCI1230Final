@@ -1,4 +1,8 @@
 #version 330 core
+
+
+// UNCOMMENT THE BELOW SECTION TO RENDER MOUNTAIN SCENE
+
 in vec4 vert;
 in vec4 norm;
 in vec3 color;
@@ -85,6 +89,9 @@ void main(void)
 }
 
 
+// UNCOMMENT BELOW FOR CANYON (CEL SHADING) SCENE
+
+
 
 
 //#version 330 core
@@ -117,12 +124,14 @@ void main(void)
 //    // This is just an example condition and might need to be adjusted
 //    if (abs(norm.y) >= 0.9999) {
 
+//        colore = vec4(0.3, 0.3, 0.3, 1.0); // Grey color
+
 //        if (rainbowVomit) {
 //           colore = vec4(.13, .28, .87, 1.0); // Grey color
 //        }
 
 
-//        colore = vec4(0.3, 0.3, 0.3, 1.0); // Grey color
+
 //    } else {
 //        // Existing color calculations based on intensity
 //        if (intensity > 0.95) {

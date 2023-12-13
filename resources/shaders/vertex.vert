@@ -12,11 +12,14 @@ uniform mat4 mvMatrix;
 
 void main()
 {
+    // UNCOMMENT THE BELOW SECTION TO RENDER MOUNTAIN SCENE
     vert  = mvMatrix * vec4(vertex, 1.0);
     norm  = transpose(inverse(mvMatrix)) *  vec4(normal, 0.0);
     color = inColor;
     lightDir = normalize(vec3(mvMatrix * vec4(1, 0, 1, 0)));
     gl_Position = projMatrix * mvMatrix * vec4(vertex, 1.0);
+
+    // UNCOMMENT THE BELOW SECTION TO RENDER CANYON SCENE
 
 //   norm = transpose(inverse(mvMatrix)) *  vec4(normal, 0.0);
 //   lightDir = normalize(vec3(mvMatrix * vec4(1, 0, 1, 0)));

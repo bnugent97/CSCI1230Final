@@ -154,7 +154,7 @@ float TerrainGenerator::getHeight(float x, float y) {
     float frequency = 1.f;
 
     for (int octave = 0; octave < 4; ++octave) {
-        totalHeight += amplitude * noise.signedRawNoise( x * frequency, y * frequency ); // simplex
+        totalHeight += amplitude * noise.signedRawNoise( glm::vec2(x * frequency, y * frequency )); // simplex
         //totalHeight += amplitude * computePerlin( x * frequency, y * frequency );
         amplitude *= 0.5f;
         frequency *= 2.0f;
