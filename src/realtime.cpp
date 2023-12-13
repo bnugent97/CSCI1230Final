@@ -267,21 +267,16 @@ void Realtime::initializeGL()
     // Disable face culling
     //    glDisable(GL_CULL_FACE);
 
-    // FBO Implementation below this:
 
-    // Use the texture shader program to set the uniform
-    //glUseProgram(m_texture_shader);
+    // FBO Implementation below this
 
-    // Task 10: Set the texture.frag uniform for our texture
-
+    // Set the texture.frag uniform for our texture
     m_texture_shader->setUniformValue("u_texture", 0);
     viewportSizeLocation = m_program->uniformLocation("viewportSize");
-
 
     // Return to the default state of program 0
     glUseProgram(0);
 
-    // Task 11: Fix this "fullscreen" quad's vertex data
     std::vector<GLfloat> fullscreen_quad_data =
         {
             // Positions         // Texture Coordinates
@@ -293,8 +288,6 @@ void Realtime::initializeGL()
             -1.0f,  1.0f, 0.0f,   0.0f, 1.0f   // Top Left
         };
 
-    // Task 12: Play around with different values!
-
     // Generate and bind a VBO and a VAO for a fullscreen quad
     glGenBuffers(1, &m_fullscreen_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_fullscreen_vbo);
@@ -302,7 +295,6 @@ void Realtime::initializeGL()
     glGenVertexArrays(1, &m_fullscreen_vao);
     glBindVertexArray(m_fullscreen_vao);
 
-    // Task 14: modify the code below to add a second attribute to the vertex attribute array
     // Enable the vertex attribute for position
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), reinterpret_cast<void*>(0));
@@ -420,13 +412,10 @@ void Realtime::renderSkybox() {
 
 void Realtime::paintGL()
 {
-
-
-    // Task 23: Uncomment the following code
-    //    // Task 24: Bind our FBO
+    // Bind our FBO
     glBindFramebuffer(GL_FRAMEBUFFER, m_fbo);
 
-    //    // Task 28: Call glViewport
+    // Call glViewport
     // Maybe need to reposition
     glViewport(0, 0, m_screen_width, m_screen_height);
 
@@ -438,9 +427,6 @@ void Realtime::paintGL()
     // Render Skybox
     renderSkybox();
 
-    // Restore default depth function for terrain rendering
-    // glDepthFunc(GL_ALWAYS);
-
     // Bind the terrain shader program
     m_program->bind();
 
@@ -448,14 +434,10 @@ void Realtime::paintGL()
     m_program->setUniformValue(m_projMatrixLoc, m_proj);
     m_program->setUniformValue(m_mvMatrixLoc, m_camera * m_world);
 
-
     GLfloat fogSize = GLfloat(float(settings.shapeParameter2)/100.f);
-    //std::cout << fogSize << std::endl;
     //m_program->setUniformValue(viewportSizeLocation,fogSize, fogSize);
 
-
     m_program->setUniformValue(viewportSizeLocation, GLfloat(m_screen_width), GLfloat(m_screen_height));
-
 
     // Bind terrain VAO and render terrain
     m_terrainVao.bind();
@@ -466,10 +448,8 @@ void Realtime::paintGL()
     m_program->setUniformValue(m_program->uniformLocation("wireshade"),m_terrain.m_wireshade);
     m_program->setUniformValue("farPlane", m_farPlane);
 
-
     int resX = m_terrain.getResolutionX();
     int resY = m_terrain.getResolutionY();
-
 
     glPolygonMode(GL_FRONT_AND_BACK,m_terrain.m_wireshade? GL_LINE : GL_FILL);
     glDrawArrays(GL_TRIANGLES, 0, resX * resY * 6);
@@ -478,16 +458,13 @@ void Realtime::paintGL()
 
     // FBO Reimplementation
 
-    //    // Task 25: Bind the default framebuffer
+    // Bind the default framebuffer
     glBindFramebuffer(GL_FRAMEBUFFER, m_defaultFBO);
 
-
-
-
-    //    // Task 26: Clear the color and depth buffers
+    // Clear the color and depth buffers
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //    // Task 27: Call paintTexture to draw our FBO color attachment texture | Task 31: Set bool parameter to true
+    // Call paintTexture to draw our FBO color attachment texture
     paintTexture(m_fbo_texture,  settings.extraCredit1, settings.extraCredit2, settings.extraCredit3);
 
 
@@ -496,25 +473,16 @@ void Realtime::paintGL()
 void Realtime::paintTexture(GLuint texture, bool postProcess1, bool postProcess2, bool postProcess3) {
     m_texture_shader->bind();
 
-    // Task 32: Set your bool uniform on whether or not to filter the texture drawn
     m_texture_shader->setUniformValue("daytime", postProcess1 ? 1 : 0);
 
-    // Task 32: Set your bool uniform on whether or not to filter the texture drawn
     m_texture_shader->setUniformValue("nighttime", postProcess2 ? 1 : 0);
 
-
-    // Extra Credit implementation
-    // Task 32: Set your bool uniform on whether or not to filter the texture drawn
     m_texture_shader->setUniformValue("rainbowvomit", postProcess3 ? 1 : 0);
 
     glBindVertexArray(m_fullscreen_vao);
-    // Task 10: Bind "texture" to slot 0
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
-
-    // Now you can call glDrawArrays or any other drawing function
-    //glDrawArrays(GL_TRIANGLES, 0, 6);
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindTexture(GL_TEXTURE_2D, 0);
@@ -522,13 +490,11 @@ void Realtime::paintTexture(GLuint texture, bool postProcess1, bool postProcess2
     glUseProgram(0);
 }
 
-void Realtime::resizeGL(int w, int h)
-{
+void Realtime::resizeGL(int w, int h) {
     m_screen_width = size().width() * m_devicePixelRatio;
     m_screen_height = size().height() * m_devicePixelRatio;
     m_fbo_width = m_screen_width;
     m_fbo_height = m_screen_height;
-    // Task 34: Regenerate your FBOs
     makeFBO();
 
     m_proj.setToIdentity();
@@ -601,23 +567,20 @@ void Realtime::rebuildMatrices() {
 }
 
 void Realtime::timerEvent(QTimerEvent *event) {
-    float deltaTime = m_elapsedTimer.elapsed() * 0.001f; // Convert milliseconds to seconds
+    float deltaTime = m_elapsedTimer.elapsed() * 0.001f;
     m_elapsedTimer.restart();
 
-    float moveSpeed = 0.1f; // Adjust as needed
+    float moveSpeed = 0.1f;
     float moveDistance = moveSpeed * deltaTime;
 
     QVector3D forward = -m_camera.column(2).toVector3D().normalized();
     //QVector3D right = QVector3D::crossProduct(QVector3D(0, 0, 1), forward).normalized();
 
-    // Remove vertical component from the forward vector
     forward.setZ(0);
     forward.normalize();
 
-    // Calculate the inverse of the camera matrix to get the transformation matrix
     QMatrix4x4 inverseCamera = m_camera.inverted();
 
-    // Extract the position from the transformation matrix
     QVector3D position = inverseCamera.column(3).toVector3D();
 
     QVector3D movement(0.0f, 0.0f, 0.0f);

@@ -1,11 +1,11 @@
 #include "terraingenerator.h"
 #include <cmath>
 #include "glm/glm.hpp"
-#include <glm/gtc/random.hpp>>
+#include <glm/gtc/random.hpp>
 #include <array>
 #include <vector>
-#include <algorithm> // For std::min
-#include <limits>    // For std::numeric_limits
+#include <algorithm>
+#include <limits>
 
 #include "settings.h"
 
@@ -97,8 +97,7 @@ std::vector<float> TerrainGenerator::generateTerrain() {
     return verts;
 }
 // Samples the (infinite) random vector grid at (row, col)
-glm::vec2 TerrainGenerator::sampleRandomVector(int row, int col)
-{
+glm::vec2 TerrainGenerator::sampleRandomVector(int row, int col) {
     std::hash<int> intHash;
     int index = intHash(row * 41 + col * 43) % m_lookupSize;
     return m_randVecLookup.at(index);
@@ -109,11 +108,9 @@ glm::vec2 TerrainGenerator::sampleRandomVector(int row, int col)
 glm::vec3 TerrainGenerator::getPosition(int row, int col) {
     float scale_x = 2.0; // Adjust this scale for the x-axis
     float scale_y = 50.0; // Adjust this scale for the y-axis
-    //    float scale_x = 1.0; // Adjust this scale for the x-axis
-    //    float scale_y = 5.0; // Adjust this scale for the y-axis
+    //    float scale_x = 1.0;
+    //    float scale_y = 5.0;
 
-
-    // Adjust the normalization to scale around the center
     float halfResX = m_resolutionX / 2.0f;
     float halfResY = m_resolutionY / 2.0f;
     float x = ((row - halfResX) * scale_x + halfResX) / m_resolutionX;
@@ -131,7 +128,7 @@ float interpolate(float A, float B, float alpha) {
 }
 
 float TerrainGenerator::getHeight(float x, float y) {
-    // Calculate the offset for the "valley"
+    // Calculate the offset for the road
     float xOffset = 0.0f; // No horizontal offset
     float yOffset = 0.0f; // No vertical offset
     SimplexNoise noise;
@@ -140,13 +137,13 @@ float TerrainGenerator::getHeight(float x, float y) {
     x += xOffset;
     y += yOffset;
 
-    // Set a central region (the "valley") where the terrain is flat
-    float centralWidth = 0.1f; // Adjust this value to control the width of the valley
-    float centralHeight = -0.1f; // Adjust this value to control the depth of the valley
+    // Set a region for the road where the terrain is flat
+    float centralWidth = 0.1f; // Adjust this value to control the width
+    float centralHeight = -0.1f; // Adjust this value to control the depth
     if (x >= 0.5f - centralWidth / 2.0f && x <= 0.5f + centralWidth / 2.0f) {
         return centralHeight;
     }
-    // Calculate a smoothstep factor based on the distance from the center of the valley
+    // Calculate a smoothstep factor based on the distance from the center of the road
     float smoothFactor = glm::smoothstep(0.0f, centralWidth / 0.25f, abs(x - 0.5f));
 
     //    float totalHeight = 0.0f;
@@ -157,7 +154,7 @@ float TerrainGenerator::getHeight(float x, float y) {
     float frequency = 1.f;
 
     for (int octave = 0; octave < 4; ++octave) {
-        totalHeight += amplitude * noise.signedRawNoise( x * frequency, y * frequency );
+        totalHeight += amplitude * noise.signedRawNoise( x * frequency, y * frequency ); // simplex
         //totalHeight += amplitude * computePerlin( x * frequency, y * frequency );
         amplitude *= 0.5f;
         frequency *= 2.0f;
@@ -168,8 +165,7 @@ float TerrainGenerator::getHeight(float x, float y) {
 
 // Computes the normal of a vertex by averaging neighbors
 glm::vec3 TerrainGenerator::getNormal(int row, int col) {
-    // Task 9: Compute the average normal for the given input indices
-    // TA SOLUTION
+    // Compute the average normal for the given input indices
     glm::vec3 normal = glm::vec3(0, 0, 0);
     std::vector<std::vector<int>> neighborOffsets = { // Counter-clockwise around the vertex
         {-1, -1},
@@ -197,26 +193,25 @@ glm::vec3 TerrainGenerator::getNormal(int row, int col) {
 // Computes color of vertex using normal and, optionally, position
 glm::vec3 TerrainGenerator::getColor(glm::vec3 normal, glm::vec3 position) {
     // Adjust these thresholds according to your terrain's height range
-    float snowHeight = 0.35f; // Height above which terrain is snow
-    float dirtHeight = 0.2f; // Height above which terrain is dirt and below which it is snow
+    float snowHeight = 0.35f;
+    float dirtHeight = 0.2f;
     float road = -0.1f;
-    // Use the z component of position to determine the height
     float height = position.z;
 
     if (height > snowHeight) {
-        return glm::vec3(1, 1, 1); // Snow (white)
+        return glm::vec3(1, 1, 1); // Snow
     } else if (height > dirtHeight) {
-        return glm::vec3(0.7, 0.48, 0.32); // Dirt (brown)
+        return glm::vec3(0.7, 0.48, 0.32); // Dirt
     } else if (height >= road && height < -0.099999994f ) {
         return glm::vec3(0.38,0.38,0.38); // road
     } else {
-        return glm::vec3(0.2, 0.5, 0.2); // Grass (green)
+        return glm::vec3(0.2, 0.5, 0.2); // Grass
     }
 }
 
 // Computes the intensity of Perlin noise at some point
 float TerrainGenerator::computePerlin(float x, float y) {
-    // Task 1: get grid indices (as ints)
+    //Get grid indices (as ints)
     int x0 = static_cast<int>(std::floor(x));  // x top-left grid point
     int y0 = static_cast<int>(std::floor(y));  // y top-left grid point
     int x1 = x0 + 1;  // x top-right grid point
@@ -230,12 +225,12 @@ float TerrainGenerator::computePerlin(float x, float y) {
     float offsetBLy = y - static_cast<float>(y1);
     float offsetBRx = x - static_cast<float>(x1);
     float offsetBRy = y - static_cast<float>(y1);
-    // Task 3: compute the dot product between the grid point direction vectors and its offset vectors
+    // Compute the dot product between the grid point direction vectors and its offset vectors
     float A = offsetTLx * sampleRandomVector(x0, y0).x + offsetTLy * sampleRandomVector(x0, y0).y;
     float B = offsetTRx * sampleRandomVector(x1, y0).x + offsetTRy * sampleRandomVector(x1, y0).y;
     float C = offsetBRx * sampleRandomVector(x1, y1).x + offsetBRy * sampleRandomVector(x1, y1).y;
     float D = offsetBLx * sampleRandomVector(x0, y1).x + offsetBLy * sampleRandomVector(x0, y1).y;
-    // Task 5: Debug this line to properly use your interpolation function to produce the correct value
+
     return interpolate(interpolate(A, B, offsetTLx), interpolate(D, C, offsetTLx), offsetTLy);
 }
 
